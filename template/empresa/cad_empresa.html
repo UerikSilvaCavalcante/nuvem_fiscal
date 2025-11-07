@@ -1,0 +1,43 @@
+{% extends 'base.html' %} {% load static %} {% block content %}
+
+<h1>Empresas</h1>
+<div class="card shadow mb-4">
+  <div class="card-header py-3">
+    <h3 class="m-0 font-weight-bold text-primary">Cadastrar Empresa</h3>
+  </div>
+  <div class="card-body">
+    <form action="{% url 'cad_empresa' %}" method="POST">
+      {% csrf_token %}
+      <h6 class="m-0 font-weight-bold text-primary">Dados da Empresa</h6>
+      {% for field in empresa_form.visible_fields %}
+
+      <label for="{{field.id_for_label}}"
+        >{{ field.label }} {% for error in field.errors %}
+        <span class="text-danger">{{ error }}</span>
+        {% endfor %}</label
+      >
+      {{ field }} {% endfor %}
+
+      <hr class="sidebar-divider my-4 bg-gradient-primary" />
+      <h6 class="m-0 mt-4 font-weight-bold text-primary">
+        Enddereço da Empresa
+      </h6>
+      {% for field in endereco_form.visible_fields %}
+
+      <label for="{{field.id_for_label}}"
+        >{{ field.label }} {% for error in field.errors %}
+        <span class="text-danger">{{ error }}</span>
+        {% endfor %}</label
+      >
+      {{ field }} {% endfor %}
+      <button class="btn btn-primary mt-4" style="width: 100%" type="submit">
+        Cadastrar
+      </button>
+      <button class="btn btn-secondary mt-4" style="width: 100%" type="reset">
+        Limpar
+      </button>
+    </form>
+  </div>
+</div>
+
+{% endblock %}
