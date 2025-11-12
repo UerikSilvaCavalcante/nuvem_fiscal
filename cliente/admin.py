@@ -8,17 +8,17 @@ from .forms import ClienteForm
 
 @admin.register(Cliente)
 class ClienteAdmin(UserAdmin):
-    list_display = ("username", "email", "client_id", "scope", "token")
+    list_display = ("username", "email", "client_id", "scope")
     add_form = ClienteForm
     fieldsets = UserAdmin.fieldsets + (
         (
             "Dados do Cliente",
             {"classes": ("wide"), "fields": ("client_id", "client_secret", "scope")},
         ),
-    )
+    )  # type: ignore
     add_fieldsets = UserAdmin.fieldsets + (
         (
             "Dados do Cliente",
             {"classes": ("wide"), "fields": ("client_id", "client_secret", "scope")},
         ),
-    )
+    )  # type: ignore

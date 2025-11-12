@@ -37,7 +37,10 @@
             <td>{{empresa.nome_razao_social}}</td>
             <td>{{empresa.email}}</td>
             <td>
-              <a href="#" class="btn btn-info btn-circle btn-sm">
+              <a
+                href="{% url 'info_empresa' empresa.cpf_cnpj %}"
+                class="btn btn-info btn-circle btn-sm"
+              >
                 <i class="fas fa-info-circle"></i>
               </a>
             </td>
@@ -46,13 +49,14 @@
                 href="#"
                 class="btn btn-danger btn-circle btn-sm"
                 data-toggle="modal"
-                data-target="#deleteModal"
+                data-target="#deleteModal-{{empresa.cpf_cnpj}}"
               >
                 <i class="fas fa-trash"></i>
               </a>
+              {% include 'empresa/partials/_delete_modal.html' with empresa_id=empresa.cpf_cnpj %}
             </td>
           </tr>
-          {% include 'empresa/partials/_delete_modal.html' with empresa_id=empresa.cpf_cnpj %} {% endfor %}
+          {% endfor %}
         </tbody>
       </table>
     </div>

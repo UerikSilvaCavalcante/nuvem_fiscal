@@ -1,5 +1,3 @@
-from django.test import TestCase
-
 from pydantic import BaseModel, field_validator
 import re
 
@@ -10,30 +8,16 @@ class CEP(BaseModel):
     @field_validator("value")
     def _one_digit(cls, value: str) -> str:
         if not value:
-            raise ValueError("CEP cannot be empty")
+            raise ValueError("CEP não pode estar vazio")
         if not re.match(r"^\d+$", value):
-            raise ValueError("CEP must contain only numbers")
+            raise ValueError("CEP deve conter apenas números")
         return value
 
     @field_validator("value")
     def _valid_length(cls, value: str) -> str:
         if len(value) != 8:
-            raise ValueError("CEP must have 8 digits")
+            raise ValueError("CEP deve conter 8 números")
         return value
 
     def get(self) -> str:
         return self.value
-
-
-# Create your tests here.
-def test_validator_cep(cep):
-
-    try:
-        valid_cep = CEP(value=cep)
-        print(valid_cep.get())
-    except Exception as e:
-        print(e)
-
-
-cep = ""
-test_validator_cep(cep)

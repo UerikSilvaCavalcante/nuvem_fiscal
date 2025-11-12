@@ -1,0 +1,326 @@
+{% extends 'base.html' %} {% load static %} {% block content %}
+<h1>Informações da Empresa</h1>
+<div class="card shadow mb-4">
+  <div
+    class="card-header py-3 d-flex flex-row align-items-center justify-content-between"
+  >
+    <h6 class="m-0 font-weight-bold text-primary">
+      Empresa {{empresa.nome_razao_social}}
+    </h6>
+    <div class="dropdown no-arrow">
+      <a
+        class="dropdown-toggle"
+        href="#"
+        role="button"
+        id="dropdownMenuLink"
+        data-toggle="dropdown"
+        aria-haspopup="true"
+        aria-expanded="false"
+      >
+        <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+      </a>
+      <div
+        class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+        aria-labelledby="dropdownMenuLink"
+      >
+        <div class="dropdown-header">Ações:</div>
+        <a class="dropdown-item" href="#">Editar Empresa</a>
+        <a class="dropdown-item" href="#">Excluir Empresa</a>
+      </div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="d-grid row row-gap-3">
+      <div class="col card border-bottom-primary p-0">
+        <p class="card-header m-0 font-weight-bold text-primary">CNPJ</p>
+        <p class="card-body">{{empresa.cpf_cnpj}}</p>
+      </div>
+      <div class="w-4" style="width: 30px"></div>
+      <div class="col card border-bottom-primary p-0">
+        <p class="card-header m-0 font-weight-bold text-primary">
+          Razão Social
+        </p>
+        <p class="card-body">{{empresa.nome_razao_social}}</p>
+      </div>
+    </div>
+    <div style="height: 15px"></div>
+
+    <div class="d-grid row row-gap-3">
+      <div class="col card border-bottom-primary p-0">
+        <p class="card-header m-0 font-weight-bold text-primary">Email</p>
+        <p class="card-body">{{empresa.email}}</p>
+      </div>
+    </div>
+    <div style="height: 15px"></div>
+    <div class="d-grid row row-gap-3">
+      <!-- Card Header - Accordion -->
+      <a
+        href="#collapseCardEndereco"
+        class="d-block card-header py-3"
+        data-toggle="collapse"
+        role="button"
+        style="width: 100%"
+        aria-expanded="true"
+        aria-controls="collapseCardEndereco"
+      >
+        <h6 class="m-0 font-weight-bold text-primary">Endereço da Empresa</h6>
+      </a>
+      <!-- Card Content - Collapse -->
+      <div class="collapse show p-0 container" id="collapseCardEndereco">
+        <div class="card-body">
+          <div class="d-grid row container" style="gap: 20px">
+            <div class="col card border-bottom-primary p-0">
+              <p class="card-header m-0 font-weight-bold text-primary">
+                Bairro
+              </p>
+              <p class="card-body">{{empresa.endereco.bairro}}</p>
+            </div>
+            <div class="col card border-bottom-primary p-0">
+              <p class="card-header m-0 font-weight-bold text-primary">
+                Logradouro
+              </p>
+              <p class="card-body">{{empresa.endereco.logradouro}}</p>
+            </div>
+          </div>
+          <div style="height: 10px"></div>
+          <div class="d-grid row container" style="gap: 20px">
+            <div class="col card border-bottom-primary p-0">
+              <p class="card-header m-0 font-weight-bold text-primary">
+                Numero
+              </p>
+              <p class="card-body">{{empresa.endereco.numero}}</p>
+            </div>
+            <div class="col card border-bottom-primary p-0 container">
+              <p class="card-header m-0 font-weight-bold text-primary">
+                Complemento
+              </p>
+              <p class="card-body">{{empresa.endereco.complemento}}</p>
+            </div>
+          </div>
+          <div style="height: 10px"></div>
+          <div class="d-grid row container" style="gap: 20px">
+            <div class="col card border-bottom-primary p-0">
+              <p class="card-header m-0 font-weight-bold text-primary">
+                Codigo Municipio
+              </p>
+              <p class="card-body">{{empresa.endereco.codigo_municipio}}</p>
+            </div>
+            <div class="col card border-bottom-primary p-0 container">
+              <p class="card-header m-0 font-weight-bold text-primary">
+                Cidade
+              </p>
+              <p class="card-body">{{empresa.endereco.cidade}}</p>
+            </div>
+          </div>
+          <div style="height: 10px"></div>
+          <div class="d-grid row container" style="gap: 20px">
+            <div class="col card border-bottom-primary p-0">
+              <p class="card-header m-0 font-weight-bold text-primary">UF</p>
+              <p class="card-body">{{empresa.endereco.uf}}</p>
+            </div>
+          </div>
+          <div style="height: 10px"></div>
+          <div class="d-grid row container" style="gap: 20px">
+            <div class="col card border-bottom-primary p-0">
+              <p class="card-header m-0 font-weight-bold text-primary">
+                Codigo Pais
+              </p>
+              <p class="card-body">{{empresa.endereco.codigo_pais}}</p>
+            </div>
+            <div class="col card border-bottom-primary p-0">
+              <p class="card-header m-0 font-weight-bold text-primary">Pais</p>
+              <p class="card-body">{{empresa.endereco.pais}}</p>
+            </div>
+          </div>
+          <div style="height: 10px"></div>
+          <div class="d-grid row container" style="gap: 20px">
+            <div class="col card border-bottom-primary p-0">
+              <p class="card-header m-0 font-weight-bold text-primary">CEP</p>
+              <p class="card-body">{{empresa.endereco.cep}}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="height: 15px"></div>
+
+    <div class="d-grid row row-gap-3">
+      <!-- Card Header - Accordion -->
+      <a
+        href="#collapseCardCertificado"
+        class="d-block card-header py-3"
+        data-toggle="collapse"
+        role="button"
+        style="width: 100%"
+        aria-expanded="true"
+        aria-controls="collapseCardCertificado"
+      >
+        <h6 class="m-0 font-weight-bold text-primary">Certificado</h6>
+      </a>
+      <!-- Card Content - Collapse -->
+      {% if certificado.error %}
+      <div class="collapse show p-0 container" id="collapseCardCertificado">
+        <div class="card-body border-bottom-primary col">
+          {{certificado.error.message}}
+          <br />
+          <a
+            href="{% url 'cad_certificado' empresa.cpf_cnpj %}"
+            class="btn btn-primary container mt-3"
+          >
+            Adicionar ou Alterar Certificado
+          </a>
+        </div>
+
+        {% else %}
+        <div class="collapse show p-0 container" id="collapseCardExample">
+          <div class="card-body">
+            <div class="d-grid row container" style="gap: 20px">
+              <div class="col card border-bottom-primary p-0">
+                <p class="card-header m-0 font-weight-bold text-primary">
+                  Numero Serial
+                </p>
+                <p class="card-body">{{certificado.serial_number}}</p>
+              </div>
+              <div class="col card border-bottom-primary p-0">
+                <p class="card-header m-0 font-weight-bold text-primary">
+                  Nome
+                </p>
+                <p class="card-body">{{certificado.issuer_name}}</p>
+              </div>
+            </div>
+            <div style="height: 10px"></div>
+            <div class="d-grid row container" style="gap: 20px">
+              <div class="col card border-bottom-primary p-0">
+                <p class="card-header m-0 font-weight-bold text-primary">
+                  Validade Inicio
+                </p>
+                <p class="card-body">{{certificado.not_valid_before}}</p>
+              </div>
+              <div class="col card border-bottom-primary p-0 container">
+                <p class="card-header m-0 font-weight-bold text-primary">
+                  Validade Fim
+                </p>
+                <p class="card-body">{{certificado.not_valid_after}}</p>
+              </div>
+            </div>
+            <div style="height: 10px"></div>
+            <div class="d-grid row container" style="gap: 20px">
+              <div class="col card border-bottom-primary p-0">
+                <p class="card-header m-0 font-weight-bold text-primary">
+                  Impresso digital
+                </p>
+                <p class="card-body">{{certificado.thumbprint}}</p>
+              </div>
+            </div>
+            <div style="height: 10px"></div>
+            <div class="d-grid row container" style="gap: 20px">
+              <div class="col card border-bottom-primary p-0">
+                <p class="card-header m-0 font-weight-bold text-primary">
+                  Nome do assunto
+                </p>
+                <p class="card-body">{{certificado.subject_name}}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+    <div style="height: 15px"></div>
+
+    <div class="d-grid row row-gap-3">
+      <!-- Card Header - Accordion -->
+      <a
+        href="#collapseCardConfigNFSe"
+        class="d-block card-header py-3"
+        data-toggle="collapse"
+        role="button"
+        style="width: 100%"
+        aria-expanded="true"
+        aria-controls="collapseCardConfigNFSe"
+      >
+        <h6 class="m-0 font-weight-bold text-primary">
+          Configurações de Nota Fiscal de Serviço (NFS-e)
+        </h6>
+      </a>
+      <!-- Card Content - Collapse -->
+      {% if config_nfse.error %}
+      <div class="collapse show p-0 container" id="collapseCardConfigNFSe">
+        <div class="card-body border-bottom-primary">
+          Configuração de NFS-e não encontrada para esta empresa. Adicione uma
+          configuração para emitir NFS-e.
+          <br />
+          <a
+            href='{% url "config_nfse" empresa.cpf_cnpj  %}'
+            class="btn btn-primary container mt-3"
+          >
+            Configurar emissão de NFS-e
+          </a>
+        </div>
+        {% else %}
+        <div class="collapse show p-0 container" id="collapseCardExample">
+          <div class="card-body">
+            <div class="d-grid row container" style="gap: 20px">
+              <div class="col card border-bottom-primary p-0">
+                <p class="card-header m-0 font-weight-bold text-primary">
+                  Regime Especial de Tributação
+                </p>
+                <div class="card-body">
+                  <p class="border-left-primary">
+                    Obrigação da Raz o Social: {{config_nfse.regTrib.opSimpNac}}
+                  </p>
+                  <p class="border-left-primary">
+                    Regime Especial de Tributção Social:
+                    {{config_nfse.regTrib.regApTribSN}}
+                  </p>
+                  <p class="border-left-primary">
+                    Regime Especial de Tributado:
+                    {{config_nfse.regTrib.regEspTrib}}
+                  </p>
+                </div>
+              </div>
+              <div class="col card border-bottom-primary p-0">
+                <p class="card-header m-0 font-weight-bold text-primary">RPS</p>
+                <div class="card-body">
+                  <p class="border-left-primary">
+                    Lote: {{config_nfse.rps.lote}}
+                  </p>
+                  <p class="border-left-primary">
+                    Serie: {{config_nfse.rps.serie}}
+                  </p>
+                  <p class="border-left-primary">
+                    Numero: {{config_nfse.rps.numero}}
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div style="height: 10px"></div>
+            <div class="d-grid row container" style="gap: 20px">
+              <div class="col card border-bottom-primary p-0">
+                <p class="card-header m-0 font-weight-bold text-primary">
+                  Incentivo Fiscal
+                </p>
+                <p class="card-body">
+                  {{% if config_nfse.incentivo_fiscal %}Sim{% else %}Não{% endif
+                  %}}
+                </p>
+              </div>
+            </div>
+            <div style="height: 10px"></div>
+            <div class="d-grid row container" style="gap: 20px">
+              <div class="col card border-bottom-primary p-0">
+                <p class="card-header m-0 font-weight-bold text-primary">
+                  Ambiente
+                </p>
+                <p class="card-body">{{config_nfse.ambiente}}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

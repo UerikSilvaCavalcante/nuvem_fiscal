@@ -1,0 +1,16 @@
+{% load %} {% if messages %} {% for message in messages %}
+
+<script>
+  Toastify({
+    text: "{{ message }}",
+    duration: 5000,
+    close: true,
+    gravity: "top", // `top` or `bottom`
+    position: "right", // `left`, `center` or `right`
+    backgroundColor:
+      "{% if message.tags == 'success' %}#28a745{% elif message.tags == 'danger' %}#dc3545{% else %}#343a40{% endif %}",
+    stopOnFocus: true, // Prevents dismissing of toast on hover
+  }).showToast();
+</script>
+
+{% endfor %} {% endif %}

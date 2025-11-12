@@ -23,12 +23,12 @@ def login(request):
             user = authenticate(request, username=username, password=password)
             if user:
                 url = str(os.getenv("AUTH_URL"))
-                scope = user.scope
+                scope = user.scope # type: ignore
 
                 data = {
                     "grant_type": "client_credentials",
-                    "client_id": user.client_id,
-                    "client_secret": user.client_secret,
+                    "client_id": user.client_id, # type: ignore
+                    "client_secret": user.client_secret, # type: ignore
                     "scope": scope,
                 }
 
@@ -38,7 +38,7 @@ def login(request):
                     data=data,
                 )
                 data = res.json()
-                user.token = data["access_token"]
+                user.token = data["access_token"] # type: ignore
                 
                 login_user(request, user)
                 user.save()
