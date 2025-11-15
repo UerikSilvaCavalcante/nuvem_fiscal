@@ -1,4 +1,4 @@
-from empresa.service.serializers.serializer_base import PayloadSerializer
+from service.serializers.serializer_base import PayloadSerializer
 from empresa.models import Empresa, Endereco
 from empresa.service.serializers.endereco_serializer import EnderecoSerializer
 

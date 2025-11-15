@@ -1,4 +1,4 @@
-from empresa.service.serializers.serializer_base import PayloadSerializer
+from service.serializers.serializer_base import PayloadSerializer
 import base64
 
 

@@ -18,6 +18,7 @@ from nfse.enums import (
     com_ext_enums,
     dados_fiscais_enums,
     subst_enums,
+    nfse_enums,
 )
 
 
@@ -32,11 +33,14 @@ class RegTrib(BaseModel):
 
 
 class Preset(BaseModel):
+    cnpj: Optional[CNPJ]
+    cpf: Optional[CPF]
     regTrib: Optional[RegTrib]
 
 
 class Identificacao(BaseModel):
-    cpnpj: Optional[CNPJ]
+    orgaoPublico: Optional[bool] = False
+    cnpj: Optional[CNPJ]
     cpf: Optional[CPF]
     nif: Optional[str]
     xNome: str
@@ -136,15 +140,26 @@ class InfoCompl(BaseModel):
 
 
 class ServInfo(BaseModel, ABC):
-    pass
+    cTribNac: str
+    cTribMun: Optional[str]
+    CNAE: Optional[str]
+    xDescServ: str
+    cNBS: Optional[str]
+    cNatOp: Optional[str]
+    cSitTrib: Optional[str]
 
 
 class Serv(BaseModel):
-    info_servico: Optional[
-        Union[LocPreset, CServ, ComExt, Lsadppu, Obra, AtvEvento, ExplRod, InfoCompl]
-    ]
-
-
+    cLocPrestacao: Optional[str]
+    cPaisPrestacao: Optional[str]
+    cServ: CServ
+    comExt: Optional[ComExt]
+    lsadppu: Optional[Lsadppu]
+    obra: Optional[Obra]
+    atvEvento: Optional[AtvEvento]
+    explRod: Optional[ExplRod]
+    infoCompl: Optional[InfoCompl]
+    
 class VServPreset(BaseModel):
     vReceb: Decimal
     vServ: Decimal
@@ -273,6 +288,7 @@ class Valores(BaseModel):
 class InfDPS(BaseModel):
     tpAmb: Optional[str]
     dhEmi: Date
+    verAplic: Optional[Date]
     dCompet: Optional[Date]
     subst: Optional[Subst]
     preset: Preset
@@ -283,7 +299,7 @@ class InfDPS(BaseModel):
 
 
 class NFSe(BaseModel):
-    provedor: str
-    ambiente: str
+    provedor: nfse_enums.PROVEDOR = nfse_enums.PROVEDOR.PRADAO
+    ambiente: nfse_enums.AMBIENTE
     referencia: Optional[str]
     infDPS: InfDPS
