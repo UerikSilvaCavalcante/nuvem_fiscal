@@ -7,5 +7,5 @@ class PROVEDOR(models.TextChoices):
 
 
 class AMBIENTE(models.TextChoices):
-    PROD = "producao", "Produção"
+    PROD = "producao", "Produção", 
     HOMO = "homologacao", "Homologação"

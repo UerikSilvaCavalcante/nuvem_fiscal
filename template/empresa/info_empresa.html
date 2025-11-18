@@ -257,69 +257,68 @@
             Configurar emissão de NFS-e
           </a>
         </div>
-        {% else %}
-        <div class="collapse show p-0 container" id="collapseCardExample">
-          <div class="card-body">
-            <div class="d-grid row container" style="gap: 20px">
-              <div class="col card border-bottom-primary p-0">
-                <p class="card-header m-0 font-weight-bold text-primary">
-                  Regime Especial de Tributação
+      </div>
+      {% else %}
+      <div class="collapse show p-0 container" id="collapseCardExample">
+        <div class="card-body">
+          <div class="d-grid row container" style="gap: 20px">
+            <div class="col card border-bottom-primary p-0">
+              <p class="card-header m-0 font-weight-bold text-primary">
+                Regime Especial de Tributação
+              </p>
+              <div class="card-body">
+                <p class="border-left-primary">
+                  Obrigação da Raz o Social: {{config_nfse.regTrib.opSimpNac}}
                 </p>
-                <div class="card-body">
-                  <p class="border-left-primary">
-                    Obrigação da Raz o Social: {{config_nfse.regTrib.opSimpNac}}
-                  </p>
-                  <p class="border-left-primary">
-                    Regime Especial de Tributção Social:
-                    {{config_nfse.regTrib.regApTribSN}}
-                  </p>
-                  <p class="border-left-primary">
-                    Regime Especial de Tributado:
-                    {{config_nfse.regTrib.regEspTrib}}
-                  </p>
-                </div>
-              </div>
-              <div class="col card border-bottom-primary p-0">
-                <p class="card-header m-0 font-weight-bold text-primary">RPS</p>
-                <div class="card-body">
-                  <p class="border-left-primary">
-                    Lote: {{config_nfse.rps.lote}}
-                  </p>
-                  <p class="border-left-primary">
-                    Serie: {{config_nfse.rps.serie}}
-                  </p>
-                  <p class="border-left-primary">
-                    Numero: {{config_nfse.rps.numero}}
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div style="height: 10px"></div>
-            <div class="d-grid row container" style="gap: 20px">
-              <div class="col card border-bottom-primary p-0">
-                <p class="card-header m-0 font-weight-bold text-primary">
-                  Incentivo Fiscal
+                <p class="border-left-primary">
+                  Regime Especial de Tributção Social:
+                  {{config_nfse.regTrib.regApTribSN}}
                 </p>
-                <p class="card-body">
-                  {{% if config_nfse.incentivo_fiscal %}Sim{% else %}Não{% endif
-                  %}}
+                <p class="border-left-primary">
+                  Regime Especial de Tributado:
+                  {{config_nfse.regTrib.regEspTrib}}
                 </p>
               </div>
             </div>
-            <div style="height: 10px"></div>
-            <div class="d-grid row container" style="gap: 20px">
-              <div class="col card border-bottom-primary p-0">
-                <p class="card-header m-0 font-weight-bold text-primary">
-                  Ambiente
+            <div class="col card border-bottom-primary p-0">
+              <p class="card-header m-0 font-weight-bold text-primary">RPS</p>
+              <div class="card-body">
+                <p class="border-left-primary">
+                  Lote: {{config_nfse.rps.lote}}
                 </p>
-                <p class="card-body">{{config_nfse.ambiente}}</p>
+                <p class="border-left-primary">
+                  Serie: {{config_nfse.rps.serie}}
+                </p>
+                <p class="border-left-primary">
+                  Numero: {{config_nfse.rps.numero}}
+                </p>
               </div>
             </div>
           </div>
+          <div style="height: 10px"></div>
+          <div class="d-grid row container" style="gap: 20px">
+            <div class="col card border-bottom-primary p-0">
+              <p class="card-header m-0 font-weight-bold text-primary">
+                Incentivo Fiscal
+              </p>
+              <p class="card-body">
+                {{% if config_nfse.incentivo_fiscal %}Sim{% else %}Não{% endif
+                %}}
+              </p>
+            </div>
+          </div>
+          <div style="height: 10px"></div>
+          <div class="d-grid row container" style="gap: 20px">
+            <div class="col card border-bottom-primary p-0">
+              <p class="card-header m-0 font-weight-bold text-primary">
+                Ambiente
+              </p>
+              <p class="card-body">{{config_nfse.ambiente}}</p>
+            </div>
+          </div>
         </div>
-        {% endif %}
       </div>
-      {% endif %}
+      {% endif %} {% endif %}
     </div>
   </div>
 </div>

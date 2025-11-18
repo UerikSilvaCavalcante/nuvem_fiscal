@@ -1,0 +1,254 @@
+{% extends 'base.html' %} {% load static %} {% block content %}
+
+<h1>Nota Fiscal de Serviço</h1>
+<div class="card shadow mb-4">
+  <div class="card-header py-3">
+    <h3 class="m-0 font-weight-bold text-primary">
+      Emitir Nota Fiscal de Serviço (NFS-e)
+    </h3>
+  </div>
+  <div class="card-body">
+    <form action="{% url 'cad_empresa' %}" method="POST">
+      {% csrf_token %}
+      <h6 class="m-0 font-weight-bold text-primary">Informações gerais</h6>
+      {% for field in nfse_form.visible_fields %}
+
+      <label for="{{field.id_for_label}}"
+        >{{ field.label }} {% for error in field.errors %}
+        <span class="text-danger">{{ error }}</span>
+        {% endfor %}</label
+      >
+      {{ field }} {% endfor %}
+
+      <hr class="sidebar-divider my-4 bg-gradient-primary" />
+
+      <h6 class="m-0 font-weight-bold text-primary">
+        Grupo de informações da DPS relativas ao serviço prestado
+      </h6>
+      {% for field in infDPS_form.visible_fields %}
+
+      <label for="{{field.id_for_label}}"
+        >{{ field.label }} {% for error in field.errors %}
+        <span class="text-danger">{{ error }}</span>
+        {% endfor %}</label
+      >
+      {{ field }} {% endfor %}
+
+      <div style="height: 10px"></div>
+
+      <div class="d-grid row row-gap-3">
+        <!-- Card Header - Accordion -->
+        <a
+          href="#collapseCardPrestForm"
+          class="d-block card-header py-3"
+          data-toggle="collapse"
+          role="button"
+          style="width: 100%"
+          aria-expanded="true"
+          aria-controls="collapseCardPrestForm"
+        >
+          <h6 class="m-0 font-weight-bold text-primary">
+            Grupo de informações do DPS relativas ao Prestador de Serviços
+          </h6>
+        </a>
+        <div class="collapse hide p-0 container" id="collapseCardPrestForm">
+          {% for field in prest_form.visible_fields %}
+
+          <label for="{{field.id_for_label}}"
+            >{{ field.label }} {% for error in field.errors %}
+            <span class="text-danger">{{ error }}</span>
+            {% endfor %}</label
+          >
+          {{ field }} {% endfor %}
+        </div>
+      </div>
+
+      <div style="height: 10px"></div>
+
+      <div class="d-grid row row-gap-3">
+        <!-- Card Header - Accordion -->
+        <a
+          href="#collapseCardTomaForm"
+          class="d-block card-header py-3"
+          data-toggle="collapse"
+          role="button"
+          style="width: 100%"
+          aria-expanded="true"
+          aria-controls="collapseCardTomaForm"
+        >
+          <h6 class="m-0 font-weight-bold text-primary">
+            Grupo de informações do DPS relativas ao Tomador de Serviços
+          </h6>
+        </a>
+        <div class="collapse hide p-0 container" id="collapseCardTomaForm">
+          {% for field in toma_form.visible_fields %}
+
+          <label for="{{field.id_for_label}}"
+            >{{ field.label }} {% for error in field.errors %}
+            <span class="text-danger">{{ error }}</span>
+            {% endfor %}</label
+          >
+
+          {{ field }} {% endfor %} 
+          {% for field in toma_form.end.visible_fields %}
+
+          <label for="{{field.id_for_label}}"
+            >{{ field.label }} {% for error in field.errors %}
+            <span class="text-danger">{{ error }}</span>
+            {% endfor %}</label
+          >
+          {{ field }} {% endfor %}
+        </div>
+      </div>
+
+      <div style="height: 10px"></div>
+
+      <div class="d-grid row row-gap-3">
+        <!-- Card Header - Accordion -->
+        <a
+          href="#collapseCardServForm"
+          class="d-block card-header py-3"
+          data-toggle="collapse"
+          role="button"
+          style="width: 100%"
+          aria-expanded="true"
+          aria-controls="collapseCardServForm"
+        >
+          <h6 class="m-0 font-weight-bold text-primary">
+            Grupo de informações do DPS relativas ao Serviço Prestado.
+          </h6>
+        </a>
+        <div class="collapse hide p-0 container" id="collapseCardServForm">
+          {% for field in serv_form.visible_fields %}
+
+          <label for="{{field.id_for_label}}"
+            >{{ field.label }} {% for error in field.errors %}
+            <span class="text-danger">{{ error }}</span>
+            {% endfor %}</label
+          >
+
+          {{ field }} {% endfor %} 
+          {% for field in serv_form.cServ.visible_fields %}
+
+          <label for="{{field.id_for_label}}"
+            >{{ field.label }} {% for error in field.errors %}
+            <span class="text-danger">{{ error }}</span>
+            {% endfor %}</label
+          >
+
+          {{ field }} {% endfor %} 
+          {% for field in serv_form.cServ.visible_fields %}
+
+          <label for="{{field.id_for_label}}"
+            >{{ field.label }} {% for error in field.errors %}
+            <span class="text-danger">{{ error }}</span>
+            {% endfor %}</label
+          >
+
+          {{ field }} {% endfor %}
+        </div>
+      </div>
+      <div style="height: 10px"></div>
+
+      <div class="d-grid row row-gap-3">
+        <!-- Card Header - Accordion -->
+        <a
+          href="#collapseCardvaloresForm"
+          class="d-block card-header py-3"
+          data-toggle="collapse"
+          role="button"
+          style="width: 100%"
+          aria-expanded="true"
+          aria-controls="collapseCardvaloresForm"
+        >
+          <h6 class="m-0 font-weight-bold text-primary">
+            Grupo de informações relativas à valores do serviço prestado.
+          </h6>
+        </a>
+        <div class="collapse hide p-0 container" id="collapseCardvaloresForm">
+          {% for field in valores_form.visible_fields %}
+
+          <label for="{{field.id_for_label}}"
+            >{{ field.label }} {% for error in field.errors %}
+            <span class="text-danger">{{ error }}</span>
+            {% endfor %}</label
+          >
+
+          {{ field }} {% endfor %} 
+          {% for field in valores_form.vServPrest.visible_fields %}
+
+          <label for="{{field.id_for_label}}"
+            >{{ field.label }} {% for error in field.errors %}
+            <span class="text-danger">{{ error }}</span>
+            {% endfor %}</label
+          >
+
+          {{ field }} {% endfor %}
+          <hr class="sidebar-divider my-4 bg-gradient-primary" />
+          <h6 class="m-0 font-weight-bold text-primary">
+            Grupo de informações relacionados ao Imposto Sobre Serviços de
+            Qualquer Natureza - ISSQN.
+          </h6>
+          {% for field in valores_form.trib.tribMun.visible_fields %}
+
+          <label for="{{field.id_for_label}}"
+            >{{ field.label }} {% for error in field.errors %}
+            <span class="text-danger">{{ error }}</span>
+            {% endfor %}</label
+          >
+
+          {{ field }} {% endfor %}
+          <hr class="sidebar-divider my-4 bg-gradient-primary" />
+          <h6 class="m-0 font-weight-bold text-primary">
+            Grupo de informações para totais aproximados dos tributos
+            relacionados ao serviço prestado.
+          </h6>
+          {% for field in valores_form.trib.totTrib.visible_fields %}
+
+          <label for="{{field.id_for_label}}"
+            >{{ field.label }} {% for error in field.errors %}
+            <span class="text-danger">{{ error }}</span>
+            {% endfor %}</label
+          >
+
+          {{ field }} {% endfor %}
+          <div class="row">
+            <div class="col">
+              {% for field in valores_form.trib.totTrib.vTotTrib.visible_fields %}
+
+              <label for="{{field.id_for_label}}"
+                >{{ field.label }} {% for error in field.errors %}
+                <span class="text-danger">{{ error }}</span>
+                {% endfor %}</label
+              >
+
+              {{ field }} {% endfor %}
+            </div>
+            <div class="col">
+              {% for field in valores_form.trib.totTrib.pTotTrib.visible_fields %}
+
+              <label for="{{field.id_for_label}}"
+                >{{ field.label }} {% for error in field.errors %}
+                <span class="text-danger">{{ error }}</span>
+                {% endfor %}</label
+              >
+
+              {{ field }} {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <hr class="sidebar-divider my-4 bg-gradient-primary" />
+
+      <button class="btn btn-primary mt-4" style="width: 100%" type="submit">
+        Cadastrar
+      </button>
+      <button class="btn btn-secondary mt-4" style="width: 100%" type="reset">
+        Limpar
+      </button>
+    </form>
+  </div>
+</div>
+
+{% endblock %}
