@@ -217,7 +217,7 @@ class InfDPSSerializer(PayloadSerializer):
         return payload
 
 
-class EmitNfseSerializer(PayloadSerializer):
+class Nfse(PayloadSerializer):
     def __init__(self, nfse: NFSe):
         self.nfse = nfse
 
@@ -226,6 +226,6 @@ class EmitNfseSerializer(PayloadSerializer):
             "provedor": self.nfse.provedor,
             "ambiente": self.nfse.ambiente,
             "referencia": self.nfse.referencia,
-            "infDPS": InfDPSSerializer(self.nfse.infDPS).serialize(),
+            
         }
         return payload

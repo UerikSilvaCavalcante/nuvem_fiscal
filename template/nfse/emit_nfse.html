@@ -8,7 +8,7 @@
     </h3>
   </div>
   <div class="card-body">
-    <form action="{% url 'cad_empresa' %}" method="POST">
+    <form action="{% url 'emit_nfse' %}" method="POST">
       {% csrf_token %}
       <h6 class="m-0 font-weight-bold text-primary">Informações gerais</h6>
       {% for field in nfse_form.visible_fields %}
@@ -51,7 +51,7 @@
             Grupo de informações do DPS relativas ao Prestador de Serviços
           </h6>
         </a>
-        <div class="collapse hide p-0 container" id="collapseCardPrestForm">
+        <div class="collapse show p-0 container" id="collapseCardPrestForm">
           {% for field in prest_form.visible_fields %}
 
           <label for="{{field.id_for_label}}"
@@ -80,8 +80,11 @@
             Grupo de informações do DPS relativas ao Tomador de Serviços
           </h6>
         </a>
-        <div class="collapse hide p-0 container" id="collapseCardTomaForm">
-          {% for field in toma_form.visible_fields %}
+        <div class="collapse show p-0 container" id="collapseCardTomaForm">
+          <h6 class="m-0 font-weight-bold text-primary">
+            Informações de Contato do Tomador
+          </h6>
+          {% for field in toma_form.visible_fields|slice:"0:5" %}
 
           <label for="{{field.id_for_label}}"
             >{{ field.label }} {% for error in field.errors %}
@@ -89,14 +92,17 @@
             {% endfor %}</label
           >
 
-          {{ field }} {% endfor %} 
-          {% for field in toma_form.end.visible_fields %}
+          {{ field }} {% endfor %}
+          <hr class="sidebar-divider my-4 bg-gradient-primary" />
+          <h6 class="m-0 font-weight-bold text-primary">Endereço do Tomador</h6>
+          {% for field in toma_form.visible_fields|slice:"5:" %}
 
           <label for="{{field.id_for_label}}"
             >{{ field.label }} {% for error in field.errors %}
             <span class="text-danger">{{ error }}</span>
             {% endfor %}</label
           >
+
           {{ field }} {% endfor %}
         </div>
       </div>
@@ -118,26 +124,8 @@
             Grupo de informações do DPS relativas ao Serviço Prestado.
           </h6>
         </a>
-        <div class="collapse hide p-0 container" id="collapseCardServForm">
+        <div class="collapse show p-0 container" id="collapseCardServForm">
           {% for field in serv_form.visible_fields %}
-
-          <label for="{{field.id_for_label}}"
-            >{{ field.label }} {% for error in field.errors %}
-            <span class="text-danger">{{ error }}</span>
-            {% endfor %}</label
-          >
-
-          {{ field }} {% endfor %} 
-          {% for field in serv_form.cServ.visible_fields %}
-
-          <label for="{{field.id_for_label}}"
-            >{{ field.label }} {% for error in field.errors %}
-            <span class="text-danger">{{ error }}</span>
-            {% endfor %}</label
-          >
-
-          {{ field }} {% endfor %} 
-          {% for field in serv_form.cServ.visible_fields %}
 
           <label for="{{field.id_for_label}}"
             >{{ field.label }} {% for error in field.errors %}
@@ -165,31 +153,22 @@
             Grupo de informações relativas à valores do serviço prestado.
           </h6>
         </a>
-        <div class="collapse hide p-0 container" id="collapseCardvaloresForm">
-          {% for field in valores_form.visible_fields %}
+        <div class="collapse show p-0 container" id="collapseCardvaloresForm">
+          {% for field in valores_form.visible_fields|slice:"0:2" %}
 
           <label for="{{field.id_for_label}}"
             >{{ field.label }} {% for error in field.errors %}
             <span class="text-danger">{{ error }}</span>
             {% endfor %}</label
           >
-
-          {{ field }} {% endfor %} 
-          {% for field in valores_form.vServPrest.visible_fields %}
-
-          <label for="{{field.id_for_label}}"
-            >{{ field.label }} {% for error in field.errors %}
-            <span class="text-danger">{{ error }}</span>
-            {% endfor %}</label
-          >
-
           {{ field }} {% endfor %}
+
           <hr class="sidebar-divider my-4 bg-gradient-primary" />
           <h6 class="m-0 font-weight-bold text-primary">
             Grupo de informações relacionados ao Imposto Sobre Serviços de
             Qualquer Natureza - ISSQN.
           </h6>
-          {% for field in valores_form.trib.tribMun.visible_fields %}
+          {% for field in valores_form.visible_fields|slice:"2:3" %}
 
           <label for="{{field.id_for_label}}"
             >{{ field.label }} {% for error in field.errors %}
@@ -198,23 +177,10 @@
           >
 
           {{ field }} {% endfor %}
-          <hr class="sidebar-divider my-4 bg-gradient-primary" />
-          <h6 class="m-0 font-weight-bold text-primary">
-            Grupo de informações para totais aproximados dos tributos
-            relacionados ao serviço prestado.
-          </h6>
-          {% for field in valores_form.trib.totTrib.visible_fields %}
-
-          <label for="{{field.id_for_label}}"
-            >{{ field.label }} {% for error in field.errors %}
-            <span class="text-danger">{{ error }}</span>
-            {% endfor %}</label
-          >
-
-          {{ field }} {% endfor %}
+          <!-- TribMun -->
           <div class="row">
             <div class="col">
-              {% for field in valores_form.trib.totTrib.vTotTrib.visible_fields %}
+              {% for field in valores_form.visible_fields|slice:"3:7" %}
 
               <label for="{{field.id_for_label}}"
                 >{{ field.label }} {% for error in field.errors %}
@@ -225,7 +191,47 @@
               {{ field }} {% endfor %}
             </div>
             <div class="col">
-              {% for field in valores_form.trib.totTrib.pTotTrib.visible_fields %}
+              {% for field in valores_form.visible_fields|slice:"7:11" %}
+
+              <label for="{{field.id_for_label}}"
+                >{{ field.label }} {% for error in field.errors %}
+                <span class="text-danger">{{ error }}</span>
+                {% endfor %}</label
+              >
+
+              {{ field }} {% endfor %}
+            </div>
+          </div>
+
+          <hr class="sidebar-divider my-4 bg-gradient-primary" />
+          <!-- TotTrib -->
+          <h6 class="m-0 font-weight-bold text-primary">
+            Grupo de informações para totais aproximados dos tributos
+            relacionados ao serviço prestado.
+          </h6>
+          {% for field in valores_form.visible_fields|slice:"11:12" %}
+
+          <label for="{{field.id_for_label}}"
+            >{{ field.label }} {% for error in field.errors %}
+            <span class="text-danger">{{ error }}</span>
+            {% endfor %}</label
+          >
+
+          {{ field }} {% endfor %}
+          <div class="row">
+            <div class="col">
+              {% for field in valores_form.visible_fields|slice:"12:15" %}
+
+              <label for="{{field.id_for_label}}"
+                >{{ field.label }} {% for error in field.errors %}
+                <span class="text-danger">{{ error }}</span>
+                {% endfor %}</label
+              >
+
+              {{ field }} {% endfor %}
+            </div>
+            <div class="col">
+              {% for field in valores_form.visible_fields|slice:"15:" %}
 
               <label for="{{field.id_for_label}}"
                 >{{ field.label }} {% for error in field.errors %}
@@ -242,7 +248,7 @@
       <hr class="sidebar-divider my-4 bg-gradient-primary" />
 
       <button class="btn btn-primary mt-4" style="width: 100%" type="submit">
-        Cadastrar
+        Emitir NFS-e
       </button>
       <button class="btn btn-secondary mt-4" style="width: 100%" type="reset">
         Limpar

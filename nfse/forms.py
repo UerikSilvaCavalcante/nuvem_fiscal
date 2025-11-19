@@ -1,9 +1,122 @@
 from django import forms
 from nfse.enums import nfse_enums, tribmun_enums
 from datetime import date
+from value_objects.cpf import CPF
+from value_objects.cep import CEP
+from value_objects.cnpj import CNPJ
+from pydantic import ValidationError
 
 
-class EnderecoForm(forms.Form):
+class InfoComplForm(forms.Form):
+    idDocTec = forms.CharField(
+        required=False,
+        label="Identificador do Documento Tecnico",
+        widget=forms.TextInput(attrs={"class": "form-control form-control-user"}),
+    )
+
+    docRef = forms.CharField(
+        required=False,
+        label="Documento Referencia",
+        widget=forms.TextInput(attrs={"class": "form-control form-control-user"}),
+    )
+
+    xInfComp = forms.CharField(
+        required=False,
+        label="Informacoes Complementares",
+        widget=forms.Textarea(attrs={"class": "form-control form-control-user"}),
+    )
+
+
+class ServForm(forms.Form):
+    cLocPrestacao = forms.CharField(
+        required=True,
+        label="Local de Prestação",
+        widget=forms.TextInput(attrs={"class": "form-control form-control-user"}),
+    )
+    cPaisPrestacao = forms.CharField(
+        required=False,
+        label="Pais",
+        widget=forms.TextInput(attrs={"class": "form-control form-control-user"}),
+        initial="1058",
+    )
+    cTribNac = forms.CharField(
+        required=True,
+        label="Codigo Tributario Nacional",
+        widget=forms.TextInput(attrs={"class": "form-control form-control-user"}),
+        max_length=6,
+    )
+
+    cTribMun = forms.CharField(
+        required=False,
+        label="Codigo Tributario Municipal",
+        widget=forms.TextInput(attrs={"class": "form-control form-control-user"}),
+    )
+
+    CNAE = forms.CharField(
+        required=False,
+        label="CNAE",
+        widget=forms.TextInput(attrs={"class": "form-control form-control-user"}),
+    )
+
+    xDescServ = forms.CharField(
+        required=True,
+        label="Descricao do Servico",
+        widget=forms.Textarea(attrs={"class": "form-control form-control-user"}),
+    )
+
+    def clean_cTribNac(self):
+        cTribNac = self.cleaned_data.get("cTribNac")
+        if cTribNac:
+            if not cTribNac.isdigit():
+                raise forms.ValidationError(
+                    "O codigo tributario nacional deve ser um numero"
+                )
+            else:
+                return cTribNac
+
+    def clean_cTribMun(self):
+        cTribMun = self.cleaned_data.get("cTribMun")
+        if cTribMun:
+            if not cTribMun.isdigit():
+                raise forms.ValidationError(
+                    "O codigo tributario municipal deve ser um numero"
+                )
+            else:
+                return cTribMun
+
+
+class TomaForm(forms.Form):
+    cnpj = forms.CharField(
+        required=False,
+        label="CNPJ",
+        max_length=14,
+        widget=forms.TextInput(attrs={"class": "form-control form-control-user"}),
+    )
+    cpf = forms.CharField(
+        required=False,
+        label="CPF",
+        max_length=11,
+        widget=forms.TextInput(attrs={"class": "form-control form-control-user"}),
+    )
+
+    xNome = forms.CharField(
+        required=True,
+        label="Nome",
+        widget=forms.TextInput(attrs={"class": "form-control form-control-user"}),
+    )
+
+    fone = forms.CharField(
+        required=False,
+        label="Telefone",
+        widget=forms.TextInput(attrs={"class": "form-control form-control-user"}),
+    )
+
+    email = forms.EmailField(
+        required=False,
+        label="Email",
+        widget=forms.EmailInput(attrs={"class": "form-control form-control-user"}),
+    )
+
     cMun = forms.CharField(
         required=True,
         label="Codigo do municipio",
@@ -42,6 +155,44 @@ class EnderecoForm(forms.Form):
         widget=forms.TextInput(attrs={"placeholder": "Ex.: Bairro da empresa"}),
     )
 
+    def clean_cpf(self):
+        cpf = self.cleaned_data.get("cpf")
+        if cpf:
+            try:
+                valid_cpf = CPF(value=cpf.strip())
+                return valid_cpf.get()
+            except ValidationError as e:
+                mensagens = [err["msg"] for err in e.errors()]
+                raise forms.ValidationError(f"CPF inválido: {mensagens[0]}")
+
+    def clean_cnpj(self):
+        cnpj = self.cleaned_data.get("cnpj")
+        if cnpj:
+            try:
+                valid_cnpj = CNPJ(value=cnpj.strip())
+                return valid_cnpj.get()
+            except ValidationError as e:
+                mensagens = [err["msg"] for err in e.errors()]
+                raise forms.ValidationError(f"CNPJ inválido: {mensagens[0]}")
+
+    def clean_cep(self):
+        cep = self.cleaned_data.get("cep")
+        if cep:
+            try:
+                valid_cep = CEP(value=cep.strip())
+                return valid_cep
+            except ValidationError as e:
+                mensagens = [err["msg"] for err in e.errors()]
+                raise forms.ValidationError(f"CEP inválido: {mensagens[0]}")
+
+    def clean_cMun(self):
+        cMun = self.cleaned_data.get("cMun")
+        if cMun:
+            if not cMun.isdigit():
+                raise forms.ValidationError("O municipio deve conter apenas números.")
+            else:
+                return cMun
+
     def __init__(self, *args, **kwargs):
         """
         Aplica a estilização do formulario
@@ -49,101 +200,6 @@ class EnderecoForm(forms.Form):
         super().__init__(*args, **kwargs)
         for field in self.fields.values():
             field.widget.attrs.update({"class": "form-control form-control-user"})
-
-
-class cServForm(forms.Form):
-    cTribNac = forms.CharField(
-        required=True,
-        label="Codigo Tributario Nacional",
-        widget=forms.TextInput(attrs={"class": "form-control form-control-user"}),
-        max_length=6,
-    )
-
-    cTribMun = forms.CharField(
-        required=False,
-        label="Codigo Tributario Municipal",
-        widget=forms.TextInput(attrs={"class": "form-control form-control-user"}),
-    )
-
-    CNAE = forms.CharField(
-        required=False,
-        label="CNAE",
-        widget=forms.TextInput(attrs={"class": "form-control form-control-user"}),
-    )
-
-    xDescServ = forms.CharField(
-        required=True,
-        label="Descricao do Servico",
-        widget=forms.Textarea(attrs={"class": "form-control form-control-user"}),
-    )
-
-
-class InfoComplForm(forms.Form):
-    idDocTec = forms.CharField(
-        required=False,
-        label="Identificador do Documento Tecnico",
-        widget=forms.TextInput(attrs={"class": "form-control form-control-user"}),
-    )
-
-    docRef = forms.CharField(
-        required=False,
-        label="Documento Referencia",
-        widget=forms.TextInput(attrs={"class": "form-control form-control-user"}),
-    )
-
-    xInfComp = forms.CharField(
-        required=False,
-        label="Informacoes Complementares",
-        widget=forms.Textarea(attrs={"class": "form-control form-control-user"}),
-    )
-
-
-class ServForm(forms.Form):
-    cLocPrestacao = forms.CharField(
-        required=True,
-        label="Local de Prestação",
-        widget=forms.TextInput(attrs={"class": "form-control form-control-user"}),
-    )
-    cPaisPrestacao = forms.CharField(
-        required=False,
-        label="Pais",
-        widget=forms.TextInput(attrs={"class": "form-control form-control-user"}),
-        initial="1058",
-    )
-    cServ = cServForm()
-
-
-class TomaForm(forms.Form):
-    cnpj = forms.CharField(
-        required=False,
-        label="CNPJ",
-        widget=forms.TextInput(attrs={"class": "form-control form-control-user"}),
-    )
-    cpf = forms.CharField(
-        required=False,
-        label="CPF",
-        widget=forms.TextInput(attrs={"class": "form-control form-control-user"}),
-    )
-
-    xNome = forms.CharField(
-        required=True,
-        label="Nome",
-        widget=forms.TextInput(attrs={"class": "form-control form-control-user"}),
-    )
-
-    fone = forms.CharField(
-        required=False,
-        label="Telefone",
-        widget=forms.TextInput(attrs={"class": "form-control form-control-user"}),
-    )
-
-    email = forms.EmailField(
-        required=False,
-        label="Email",
-        widget=forms.EmailInput(attrs={"class": "form-control form-control-user"}),
-    )
-
-    end = EnderecoForm()
 
 
 class PrestForm(forms.Form):
@@ -220,7 +276,75 @@ class TribMunForm(forms.Form):
             field.widget.attrs.update({"class": "form-control form-control-user"})
 
 
-class vTotTribForm(forms.Form):
+class ValoresForm(forms.Form):
+    vReceb = forms.DecimalField(
+        required=True,
+        label="Valor Recebido",
+        widget=forms.NumberInput(attrs={"class": "form-control form-control-user"}),
+    )
+    vServ = forms.DecimalField(
+        required=True,
+        label="Valor do Servico",
+        widget=forms.NumberInput(attrs={"class": "form-control form-control-user"}),
+    )
+    # tribMun
+    tribISSQN = forms.ChoiceField(
+        required=True,
+        label="Tributacao ISSQN sobre o serviço prestado",
+        choices=tribmun_enums.TRIBISSQN.choices,
+    )
+    cLocIncid = forms.CharField(
+        required=False,
+        label="Local de Incidência",
+        widget=forms.TextInput(
+            attrs={"class": "form-control form-control-user"},
+        ),
+    )
+    cPaisResult = forms.CharField(
+        required=False,
+        label="Codigo Pais Resultante",
+        widget=forms.TextInput(
+            attrs={"class": "form-control form-control-user"},
+        ),
+        initial="1058",
+    )
+
+    tpImunidade = forms.ChoiceField(
+        required=False,
+        label="Tipo de Imunidade",
+        choices=tribmun_enums.TPIMUNIDADE.choices,
+    )
+
+    vBC = forms.DecimalField(
+        required=False,
+        label="Base de Calculo",
+    )
+
+    pAliq = forms.DecimalField(
+        required=False,
+        label="Aliquota",
+    )
+
+    vISSQN = forms.DecimalField(
+        required=False,
+        label="Valor ISSQN",
+    )
+
+    tpRetISSQN = forms.ChoiceField(
+        required=False,
+        label="Tipo de Retencao ISSQN",
+        choices=tribmun_enums.TPRETISSQN.choices,
+    )
+
+    vLiq = forms.DecimalField(
+        required=False,
+        label="Valor Liquido",
+    )
+
+    # totTrib
+    indTotTrib = forms.IntegerField(
+        required=True, label="Indicador Total Tributos", initial=0
+    )
     vTotTribFed = forms.DecimalField(
         required=True,
         label="Valor Total Tributos Federais",
@@ -234,16 +358,6 @@ class vTotTribForm(forms.Form):
         label="Valor Total Tributos Municipais",
     )
 
-    def __init__(self, *args, **kwargs):
-        """
-        Aplica a estilização do formulario
-        """
-        super().__init__(*args, **kwargs)
-        for field in self.fields.values():
-            field.widget.attrs.update({"class": "form-control form-control-user"})
-
-
-class pTotTribForm(forms.Form):
     pTotTribFed = forms.DecimalField(
         required=True,
         label="Percentual Total Tributos Federais",
@@ -266,53 +380,11 @@ class pTotTribForm(forms.Form):
             field.widget.attrs.update({"class": "form-control form-control-user"})
 
 
-class TotTribForm(forms.Form):
-    vTotTrib = vTotTribForm()
-    pTotTrib = pTotTribForm()
-    indTotTrib = forms.IntegerField(
-        required=True, label="Indicador Total Tributos", initial=0
-    )
-
-    def __init__(self, *args, **kwargs):
-        """
-        Aplica a estilização do formulario
-        """
-        super().__init__(*args, **kwargs)
-        for field in self.fields.values():
-            field.widget.attrs.update({"class": "form-control form-control-user"})
-
-
-class TribForm(forms.Form):
-    tribMun = TribMunForm()
-    totTrib = TotTribForm()
-
-
-class vServPrestForm(forms.Form):
-    vReceb = forms.DecimalField(
-        required=True,
-        label="Valor Recebido",
-        widget=forms.NumberInput(attrs={"class": "form-control form-control-user"}),
-    )
-    vServ = forms.DecimalField(
-        required=True,
-        label="Valor do Servico",
-        widget=forms.NumberInput(attrs={"class": "form-control form-control-user"}),
-    )
-
-
-class ValoresForm(forms.Form):
-    vServPrest = vServPrestForm()
-    trib = TribForm()
-
-
 class InfDPSForm(forms.Form):
-    tpAmb = forms.IntegerField(
+    tpAmb = forms.ChoiceField(
         required=True,
         label="Ambiente",
-        widget=forms.Select(
-            choices=nfse_enums.AMBIENTE.choices,
-            attrs={"class": "form-control form-control-user"},
-        ),
+        choices=nfse_enums.AMBIENTE.choices,
     )
 
     dhEmi = forms.DateField(

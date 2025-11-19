@@ -302,4 +302,4 @@ class NFSe(BaseModel):
     provedor: nfse_enums.PROVEDOR = nfse_enums.PROVEDOR.PRADAO
     ambiente: nfse_enums.AMBIENTE
     referencia: Optional[str]
-    infDPS: InfDPS
+    
