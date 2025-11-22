@@ -1,11 +1,13 @@
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 
 class PROVEDOR(models.TextChoices):
-    PRADAO = "padrao", "Padrão"
-    NACIONAL = "nacional", "Nacional"
+    PRADAO = "padrao", _("Padrão")
+    NACIONAL = "nacional", _("Nacional")
 
 
 class AMBIENTE(models.TextChoices):
-    PROD = "producao", "Produção", 
-    HOMO = "homologacao", "Homologação"
+    PROD = "producao", _("Produção"),
+    
+    HOMO = "homologacao", _("Homologação")

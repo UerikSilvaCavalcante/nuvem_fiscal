@@ -24,8 +24,20 @@
         aria-labelledby="dropdownMenuLink"
       >
         <div class="dropdown-header">Ações:</div>
-        <a class="dropdown-item" href="#">Editar Empresa</a>
-        <a class="dropdown-item" href="#">Excluir Empresa</a>
+        <a
+          class="dropdown-item"
+          href="{% url 'edit_empresa' empresa.cpf_cnpj %}"
+          ><i class="fas fa-edit"></i>Editar Empresa</a
+        >
+        <a
+          href="#"
+          class="dropdown-item"
+          data-toggle="modal"
+          data-target="#deleteModal-{{empresa.cpf_cnpj}}"
+        >
+          <i class="fas fa-trash"></i> Excluir empresa
+        </a>
+        {% include 'empresa/partials/_delete_modal.html' with empresa_id=empresa.cpf_cnpj %}
       </div>
     </div>
   </div>

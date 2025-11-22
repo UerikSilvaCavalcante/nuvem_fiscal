@@ -1,16 +1,18 @@
 from pydantic import BaseModel
 from typing import Optional
-from cep import CEP
+from value_objects.cep import CEP
+
 
 class EndExt(BaseModel):
-    cPais: str
-    cEndPost: str
-    xCidade:str
-    xEstProvReg:str
+    cPais: str = "1058"
+    cEndPost: Optional[str]
+    xCidade: Optional[str]
+    xEstProvReg: Optional[str]
+
 
 class EnderecoSimples(BaseModel):
     cep: CEP
-    endExt: Optional[EndExt]
+    endExt: Optional[EndExt] = None
     xLgr: str
     tpLgr: Optional[str]
     nro: str

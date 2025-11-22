@@ -11,21 +11,9 @@ from value_objects.endereco import Endereco
 from nfse.enums import (
     piscofins_enum,
     tribmun_enums,
-    exig_susp_enums,
-    bm_enums,
-    documentos_enums,
-    expl_rod_enums,
-    com_ext_enums,
     dados_fiscais_enums,
-    subst_enums,
-    nfse_enums,
 )
-
-
-class Subst(BaseModel):
-    chSubstda: str
-    cMotivo: subst_enums.CMOTIVO
-    xMotivo: Optional[str]
+from nfse.enums.nfse_enums import AMBIENTE, PROVEDOR
 
 
 class RegTrib(BaseModel):
@@ -83,60 +71,6 @@ class CServ(BaseModel):
     CNAE: Optional[str]
     xDescServ: str
     cNBS: Optional[str]
-    cNatOp: Optional[str]
-    cSitTrib: Optional[str]
-
-
-class ComExt(BaseModel):
-    mdPrestacao: com_ext_enums.MDPRESTACAO
-    vincPrest: com_ext_enums.VINCPREST
-    tpMoeda: str
-    vServMoeda: Decimal
-    mecAFComexP: com_ext_enums.MECAFCOMEXP
-    mecAFComexT: com_ext_enums.MECAFCOMEXT
-    movTempBens: com_ext_enums.MOVTEMPBENS
-    nDI: Optional[str]
-    nRE: Optional[str]
-    mdic: Optional[int]
-
-
-class Lsadppu(BaseModel):
-    categ: int
-    objeto: int
-    extensao: str
-    nPostes: str
-
-
-class Obra(BaseModel):
-    cObra: Optional[str]
-    insclmobFisc: Optional[str]
-    end: EnderecoSimples
-
-
-class AtvEvento(BaseModel):
-    xNome: Optional[str]
-    desc: Optional[str]
-    end: EnderecoSimples
-    dtlni: Date
-    dtFim: Date
-    idAtvEvt: Optional[str]
-    id: Optional[str]
-
-
-class ExplRod(BaseModel):
-    categVeic: Optional[expl_rod_enums.CATEGVEICENUM]
-    nEixos: Optional[str]
-    rodagem: int
-    sentido: str
-    placa: str
-    codAcessoPad: str
-    codContrato: str
-
-
-class InfoCompl(BaseModel):
-    idDocTec: Optional[str]
-    docRel: Optional[str]
-    xInfComp: Optional[str]
 
 
 class ServInfo(BaseModel, ABC):
@@ -153,15 +87,10 @@ class Serv(BaseModel):
     cLocPrestacao: Optional[str]
     cPaisPrestacao: Optional[str]
     cServ: CServ
-    comExt: Optional[ComExt]
-    lsadppu: Optional[Lsadppu]
-    obra: Optional[Obra]
-    atvEvento: Optional[AtvEvento]
-    explRod: Optional[ExplRod]
-    infoCompl: Optional[InfoCompl]
-    
+
+
 class VServPreset(BaseModel):
-    vReceb: Decimal
+    vReceb: Optional[Decimal]
     vServ: Decimal
 
 
@@ -170,77 +99,20 @@ class VDescCondIcond(BaseModel):
     vDescCond: Decimal
 
 
-class Nfns(BaseModel):
-    nNFS: int
-    modNFS: int
-    serieNFS: str
-
-
-class Fornec(BaseModel):
-    identificacao: Identificacao
-    contato: Optional[Contato]
-    dadosFiscais: Optional[DadosFiscais]
-    end: Optional[Endereco]
-
-
-class NfseMun(BaseModel):
-    cMunNFSeMun: str
-    nNFSeMun: str
-    cVerifNFSeMun: str
-
-
-class Documentos(BaseModel):
-    chNFSe: Optional[str]
-    chNFe: Optional[str]
-    NFSeMun: Optional[NfseMun]
-    NFNFS: Optional[Nfns]
-    nDocFisc: Optional[str]
-    nDoc: Optional[str]
-    tpDedRed: Optional[documentos_enums.TPDEDRED]
-    xDescOutDed: Optional[str]
-    dtEmiDoc: Date
-    vDedutivelRedutivel: Decimal
-    vDeducaoReducao: Decimal
-    fornec: Fornec
-
-
-class VDedRed(BaseModel):
-    pDR: Decimal
-    vDR: Decimal
-    documentos: Optional[List[Documentos]]
-
-
-class Bm(BaseModel):
-    tpBM: bm_enums.TPBM
-    nBM: str
-    vRedBCBM: Optional[Decimal]
-    pRedBCBM: Optional[Decimal]
-
-
-class ExigSusp(BaseModel):
-    tpSusp: Optional[exig_susp_enums.TPSUSP] = exig_susp_enums.TPSUSP.EXIG_SUSPENSAO
-    nProcesso: str
-
-
 class TribMun(BaseModel):
     tribISSQN: tribmun_enums.TRIBISSQN
     cLocIncid: Optional[str]
     cPaisResult: Optional[str]
-    BM: Optional[Bm]
-    exigSusp: Optional[ExigSusp]
+
     tpImunidade: Optional[tribmun_enums.TPIMUNIDADE]
-    vBC: Optional[Decimal]
+
     pAliq: Optional[Decimal]
-    vISSQN: Optional[Decimal]
+
     tpRetISSQN: Optional[tribmun_enums.TPRETISSQN]
-    vLiq: Optional[Decimal]
 
 
 class Piscofins(BaseModel):
     CST: Optional[piscofins_enum.CST]
-    vBCPisCofins: Optional[Decimal]
-    pAliqPis: Optional[Decimal]
-    pAliqCofins: Optional[Decimal]
     vPis: Optional[Decimal]
     vCofins: Optional[Decimal]
     tpRetPisCofins: Optional[piscofins_enum.TPRETPISCOFINS]
@@ -248,8 +120,7 @@ class Piscofins(BaseModel):
 
 class TribFed(BaseModel):
     piscofins: Optional[Piscofins]
-    vRetCP: Optional[Decimal]
-    vRetIRRF: Optional[Decimal]
+
     vRetCSLL: Optional[Decimal]
 
 
@@ -274,32 +145,32 @@ class TotTrib(BaseModel):
 
 class Trib(BaseModel):
     tribMun: TribMun
-    tribFed: Optional[TribFed]
-    totTrib: Optional[TotTrib]
+    tribFed: Optional[TribFed] = None
+    totTrib: Optional[TotTrib] = None
 
 
 class Valores(BaseModel):
     vServPreset: VServPreset
     vDescCondIncond: Optional[VDescCondIcond]
-    vDedRed: Optional[VDedRed]
+
     trib: Trib
 
 
 class InfDPS(BaseModel):
-    tpAmb: Optional[str]
+    tpAmb: Optional[AMBIENTE]
     dhEmi: Date
-    verAplic: Optional[Date]
+    verAplic: Optional[str] = ""
     dCompet: Optional[Date]
-    subst: Optional[Subst]
-    preset: Preset
-    toma: Optional[Toma]
-    interm: Optional[Interm]
+
+    toma: Toma
+
     serv: Serv
     valores: Valores
 
 
 class NFSe(BaseModel):
-    provedor: nfse_enums.PROVEDOR = nfse_enums.PROVEDOR.PRADAO
-    ambiente: nfse_enums.AMBIENTE
+    provedor: PROVEDOR = PROVEDOR.PRADAO
+    ambiente: AMBIENTE
     referencia: Optional[str]
+
     

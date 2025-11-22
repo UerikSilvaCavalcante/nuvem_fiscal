@@ -41,7 +41,7 @@ def cad_empresa(request):
                     ensure_ascii=False,
                 )
             )
-            return redirect("home")
+            return redirect("consultar_empresa")
 
     return render(
         request,
@@ -108,3 +108,47 @@ def config_nfse(request, cpf_cnpj: str):
         "empresa/config_nfse.html",
         {"config_nfse_form": config_nfse_form, "cpf_cnpj": cpf_cnpj},
     )
+
+
+def edit_empresa(request, id):
+    user = request.user
+
+    if request.method == "POST":
+        empresa_form = EmpresaForm(request.POST, prefix="empresa")
+        endereco_form = EnderecoForm(request.POST, prefix="endereco")
+
+        if empresa_form.is_valid() and endereco_form.is_valid():
+            empresa_serializer = EmpresaSerializer(
+                Empresa(**empresa_form.cleaned_data),
+                Endereco(**endereco_form.cleaned_data),
+            )
+
+            print(
+                json.dumps(
+                    empresa_serializer.serialize(),
+                    indent=4,
+                    ensure_ascii=False,
+                )
+            )
+            return redirect("consultar_empresa")
+    try:
+        empresa_info = get_empresa_by_id(user.token, id)
+        empresa_form = EmpresaForm(
+            initial=empresa_info,
+            prefix="empresa",
+        )
+        endereco_form = EnderecoForm(
+            initial=empresa_info.get("endereco"), prefix="endereco"
+        )
+        return render(
+            request,
+            "empresa/edit_empresa.html",
+            {
+                "empresa_form": empresa_form,
+                "endereco_form": endereco_form,
+            },
+        )
+    except Exception as e:
+        print(e)
+        messages.error(request, "Erro ao buscar informações sobre a empresa.")
+        return redirect("consultar_empresa")

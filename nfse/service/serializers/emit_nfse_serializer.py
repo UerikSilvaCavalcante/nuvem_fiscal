@@ -1,8 +1,9 @@
+from nfse.enums import tribmun_enums
 from service.serializers.serializer_base import PayloadSerializer
+
 from nfse.models import (
     NFSe,
     InfDPS,
-    Subst,
     Preset,
     RegTrib,
     Toma,
@@ -11,20 +12,6 @@ from nfse.models import (
     Valores,
 )
 from value_objects.endereco import Endereco
-
-
-class SubstSerializer(PayloadSerializer):
-    def __init__(self, subst: Subst):
-        self.subst = subst
-
-    def serialize(self) -> dict[str, object]:
-        # Implement serialization logic for Subst
-        payload = {
-            "chSubstda": self.subst.chSubstda,
-            "cMotivo": self.subst.cMotivo,
-            "xMotivo": self.subst.xMotivo,
-        }
-        return payload
 
 
 class RegTribSerializer(PayloadSerializer):
@@ -56,7 +43,7 @@ class EnderecoSerializer(PayloadSerializer):
     def serialize(self) -> dict[str, object]:
         # Implement serialization logic for Endereco
         payload = {
-            "endNac": {"cMun": self.end.cMun, "CEP": self.end.cep},
+            "endNac": {"cMun": self.end.cMun, "CEP": self.end.cep.get()},
             "endExt": self.end.endExt.model_dump_json() if self.end.endExt else None,
             "xLgr": self.end.xLgr,
             "nro": self.end.nro,
@@ -73,8 +60,8 @@ class TomaSerializer(PayloadSerializer):
     def serialize(self) -> dict[str, object]:
         payload = {
             "orgaoPublico": self.toma.identificacao.orgaoPublico,
-            "CNPJ": self.toma.identificacao.cnpj,
-            "CPF": self.toma.identificacao.cpf,
+            "CNPJ": self.toma.identificacao.cnpj.get(),  # type: ignore
+            "CPF": self.toma.identificacao.cpf.get(),  # type: ignore
             "NIF": self.toma.identificacao.nif,
             "cNaoNIF": (
                 self.toma.dadosFiscais.cNaoNIF if self.toma.dadosFiscais else None
@@ -87,37 +74,7 @@ class TomaSerializer(PayloadSerializer):
                 EnderecoSerializer(self.toma.end).serialize() if self.toma.end else None
             ),
             "fone": self.toma.contato.fone if self.toma.contato else None,
-            "email": self.toma.contato.email if self.toma.contato else None,
-        }
-
-        return payload
-
-
-class IntermSerializer(PayloadSerializer):
-    def __init__(self, interm: Interm):
-        self.interm = interm
-
-    def serialize(self) -> dict[str, object]:
-        payload = {
-            "CNPJ": self.interm.identificacao.cnpj,
-            "CPF": self.interm.identificacao.cpf,
-            "NIF": self.interm.identificacao.nif,
-            "cNaoNIF": (
-                self.interm.dadosFiscais.cNaoNIF if self.interm.dadosFiscais else None
-            ),
-            "CAEPF": (
-                self.interm.dadosFiscais.caepf if self.interm.dadosFiscais else None
-            ),
-            "IM": self.interm.dadosFiscais.im if self.interm.dadosFiscais else None,
-            "IE": self.interm.dadosFiscais.ie if self.interm.dadosFiscais else None,
-            "xNome": self.interm.identificacao.xNome,
-            "end": (
-                EnderecoSerializer(self.interm.end).serialize()
-                if self.interm.end
-                else None
-            ),
-            "fone": self.interm.contato.fone if self.interm.contato else None,
-            "email": self.interm.contato.email if self.interm.contato else None,
+            "email": self.toma.contato.email.get() if self.toma.contato else None,  # type: ignore
         }
 
         return payload
@@ -135,16 +92,6 @@ class ServSerializer(PayloadSerializer):
                 "cPaisPrestacao": self.serv.cPaisPrestacao,
             },
             "cServ": self.serv.cServ.model_dump(),
-            "comExt": self.serv.comExt.model_dump() if self.serv.comExt else None,
-            "lsadppu": self.serv.lsadppu.model_dump() if self.serv.lsadppu else None,
-            "obra": self.serv.obra.model_dump() if self.serv.obra else None,
-            "atvEvento": (
-                self.serv.atvEvento.model_dump() if self.serv.atvEvento else None
-            ),
-            "explRod": self.serv.explRod.model_dump() if self.serv.explRod else None,
-            "infoCompl": (
-                self.serv.infoCompl.model_dump() if self.serv.infoCompl else None
-            ),
         }
         return payload
 
@@ -164,11 +111,18 @@ class ValoresSerializer(PayloadSerializer):
                 if self.valores.vDescCondIncond
                 else None
             ),
-            "vDedRed": (
-                self.valores.vDedRed.model_dump() if self.valores.vDedRed else None
-            ),
             "trib": {
-                "tribMun": self.valores.trib.tribMun.model_dump(),
+                "tribMun": {
+                    **self.valores.trib.tribMun.model_dump(),
+                    "tribISSQN": self.valores.trib.tribMun.tribISSQN.value,
+                    "tpRetISSQN": self.valores.trib.tribMun.tpRetISSQN.value,  # type: ignore
+                    "tpImunidade": (
+                        self.valores.trib.tribMun.tpImunidade.value  # type: ignore
+                        if self.valores.trib.tribMun.tribISSQN
+                        == tribmun_enums.TRIBISSQN.OP_IMUNE
+                        else None
+                    ),
+                },
                 "tribFed": (
                     self.valores.trib.tribFed.model_dump()
                     if self.valores.trib.tribFed
@@ -190,24 +144,14 @@ class InfDPSSerializer(PayloadSerializer):
 
     def serialize(self) -> dict[str, object]:
         payload = {
-            "tpAmb": self.infoDPS.tpAmb,
-            "dhEmi": self.infoDPS.dhEmi,
+            "tpAmb": self.infoDPS.tpAmb.value,  # type: ignore
+            "dhEmi": str(self.infoDPS.dhEmi),
             "verAplic": self.infoDPS.verAplic,
-            "dCompet": self.infoDPS.dCompet,
-            "subst": (
-                SubstSerializer(self.infoDPS.subst).serialize()
-                if self.infoDPS.subst
-                else None
-            ),
-            "preset": PresetSerializer(self.infoDPS.preset).serialize(),
+            "dCompet": str(self.infoDPS.dCompet),
+            # "preset": PresetSerializer(self.infoDPS.preset).serialize(),
             "toma": (
                 TomaSerializer(self.infoDPS.toma).serialize()
                 if self.infoDPS.toma
-                else None
-            ),
-            "interm": (
-                IntermSerializer(self.infoDPS.interm).serialize()
-                if self.infoDPS.interm
                 else None
             ),
             "serv": ServSerializer(self.infoDPS.serv).serialize(),
@@ -217,15 +161,16 @@ class InfDPSSerializer(PayloadSerializer):
         return payload
 
 
-class Nfse(PayloadSerializer):
-    def __init__(self, nfse: NFSe):
-        self.nfse = nfse
+class NfseSerializaer(PayloadSerializer):
+    def __init__(self, nfse: NFSe, infDPS: InfDPS):
+        self._nfse = nfse
+        self._infDPS = infDPS
 
     def serialize(self) -> dict[str, object]:
         payload = {
-            "provedor": self.nfse.provedor,
-            "ambiente": self.nfse.ambiente,
-            "referencia": self.nfse.referencia,
-            
+            "provedor": self._nfse.provedor.value,
+            "ambiente": self._nfse.ambiente.value,
+            "referencia": self._nfse.referencia,
+            "infoDPS": InfDPSSerializer(self._infDPS).serialize(),
         }
         return payload

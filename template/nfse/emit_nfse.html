@@ -1,4 +1,6 @@
-{% extends 'base.html' %} {% load static %} {% block content %}
+{% extends 'base.html' %} {% load static %} 
+{% block title_page %}Emitir NFS-e{% endblock title_page %} 
+{% block content %}
 
 <h1>Nota Fiscal de Serviço</h1>
 <div class="card shadow mb-4">
@@ -16,8 +18,11 @@
       <label for="{{field.id_for_label}}"
         >{{ field.label }} {% for error in field.errors %}
         <span class="text-danger">{{ error }}</span>
-        {% endfor %}</label
-      >
+        {% endfor %}
+        <span class="text-danger">
+          {% if field.field.required %} * {% endif %}
+        </span>
+      </label>
       {{ field }} {% endfor %}
 
       <hr class="sidebar-divider my-4 bg-gradient-primary" />
@@ -30,38 +35,14 @@
       <label for="{{field.id_for_label}}"
         >{{ field.label }} {% for error in field.errors %}
         <span class="text-danger">{{ error }}</span>
-        {% endfor %}</label
-      >
+        {% endfor %}
+        <span class="text-danger">
+          {% if field.field.required %} * {% endif %}
+        </span>
+      </label>
       {{ field }} {% endfor %}
 
       <div style="height: 10px"></div>
-
-      <div class="d-grid row row-gap-3">
-        <!-- Card Header - Accordion -->
-        <a
-          href="#collapseCardPrestForm"
-          class="d-block card-header py-3"
-          data-toggle="collapse"
-          role="button"
-          style="width: 100%"
-          aria-expanded="true"
-          aria-controls="collapseCardPrestForm"
-        >
-          <h6 class="m-0 font-weight-bold text-primary">
-            Grupo de informações do DPS relativas ao Prestador de Serviços
-          </h6>
-        </a>
-        <div class="collapse show p-0 container" id="collapseCardPrestForm">
-          {% for field in prest_form.visible_fields %}
-
-          <label for="{{field.id_for_label}}"
-            >{{ field.label }} {% for error in field.errors %}
-            <span class="text-danger">{{ error }}</span>
-            {% endfor %}</label
-          >
-          {{ field }} {% endfor %}
-        </div>
-      </div>
 
       <div style="height: 10px"></div>
 
@@ -84,26 +65,38 @@
           <h6 class="m-0 font-weight-bold text-primary">
             Informações de Contato do Tomador
           </h6>
-          {% for field in toma_form.visible_fields|slice:"0:5" %}
+          {% for field in toma_form.visible_fields|slice:"0:6" %}
 
           <label for="{{field.id_for_label}}"
             >{{ field.label }} {% for error in field.errors %}
             <span class="text-danger">{{ error }}</span>
-            {% endfor %}</label
-          >
+            {% endfor %}
+            <span class="text-danger">
+              {% if field.field.required %} * {% endif %}
+            </span>
+          </label>
 
           {{ field }} {% endfor %}
           <hr class="sidebar-divider my-4 bg-gradient-primary" />
           <h6 class="m-0 font-weight-bold text-primary">Endereço do Tomador</h6>
-          {% for field in toma_form.visible_fields|slice:"5:" %}
+          {% for field in toma_form.visible_fields|slice:"6:" %}
 
           <label for="{{field.id_for_label}}"
             >{{ field.label }} {% for error in field.errors %}
             <span class="text-danger">{{ error }}</span>
-            {% endfor %}</label
-          >
+            {% endfor %}
+            <span class="text-danger">
+              {% if field.field.required %} * {% endif %}
+            </span>
+          </label>
 
-          {{ field }} {% endfor %}
+          {{ field }} {% if field.id_for_label == "id_toma-cMun" %}
+          <datalist id="cidades">
+            {% for cidade in cidades %}
+            <option value="{{cidade}}"></option>
+            {% endfor %}
+          </datalist>
+          {% endif %} {% endfor %}
         </div>
       </div>
 
@@ -130,8 +123,11 @@
           <label for="{{field.id_for_label}}"
             >{{ field.label }} {% for error in field.errors %}
             <span class="text-danger">{{ error }}</span>
-            {% endfor %}</label
-          >
+            {% endfor %}
+            <span class="text-danger">
+              {% if field.field.required %} * {% endif %}
+            </span>
+          </label>
 
           {{ field }} {% endfor %}
         </div>
@@ -154,91 +150,86 @@
           </h6>
         </a>
         <div class="collapse show p-0 container" id="collapseCardvaloresForm">
-          {% for field in valores_form.visible_fields|slice:"0:2" %}
+          {% for field in valores_form.visible_fields|slice:"0:4" %}
 
           <label for="{{field.id_for_label}}"
             >{{ field.label }} {% for error in field.errors %}
             <span class="text-danger">{{ error }}</span>
-            {% endfor %}</label
-          >
+            {% endfor %}
+            <span class="text-danger">
+              {% if field.field.required %} * {% endif %}
+            </span>
+          </label>
           {{ field }} {% endfor %}
 
           <hr class="sidebar-divider my-4 bg-gradient-primary" />
+          <!-- tribMun -->
           <h6 class="m-0 font-weight-bold text-primary">
             Grupo de informações relacionados ao Imposto Sobre Serviços de
             Qualquer Natureza - ISSQN.
           </h6>
-          {% for field in valores_form.visible_fields|slice:"2:3" %}
+          {% for field in valores_form.visible_fields|slice:"4:10" %}
 
           <label for="{{field.id_for_label}}"
             >{{ field.label }} {% for error in field.errors %}
             <span class="text-danger">{{ error }}</span>
-            {% endfor %}</label
-          >
+            {% endfor %}
+            <span class="text-danger">
+              {% if field.field.required %} * {% endif %}
+            </span>
+          </label>
 
           {{ field }} {% endfor %}
-          <!-- TribMun -->
-          <div class="row">
-            <div class="col">
-              {% for field in valores_form.visible_fields|slice:"3:7" %}
-
-              <label for="{{field.id_for_label}}"
-                >{{ field.label }} {% for error in field.errors %}
-                <span class="text-danger">{{ error }}</span>
-                {% endfor %}</label
-              >
-
-              {{ field }} {% endfor %}
-            </div>
-            <div class="col">
-              {% for field in valores_form.visible_fields|slice:"7:11" %}
-
-              <label for="{{field.id_for_label}}"
-                >{{ field.label }} {% for error in field.errors %}
-                <span class="text-danger">{{ error }}</span>
-                {% endfor %}</label
-              >
-
-              {{ field }} {% endfor %}
-            </div>
-          </div>
 
           <hr class="sidebar-divider my-4 bg-gradient-primary" />
-          <!-- TotTrib -->
+          <!-- tribFed -->
           <h6 class="m-0 font-weight-bold text-primary">
-            Grupo de informações para totais aproximados dos tributos
-            relacionados ao serviço prestado.
+            Grupo de informações de outros tributos relacionados ao serviço
+            prestado.
           </h6>
-          {% for field in valores_form.visible_fields|slice:"11:12" %}
+          {% for field in valores_form.visible_fields|slice:"10:11" %}
 
           <label for="{{field.id_for_label}}"
             >{{ field.label }} {% for error in field.errors %}
             <span class="text-danger">{{ error }}</span>
-            {% endfor %}</label
-          >
+            {% endfor %}
+            <span class="text-danger">
+              {% if field.field.required %} * {% endif %}
+            </span>
+          </label>
 
           {{ field }} {% endfor %}
-          <div class="row">
+          <hr class="sidebar-divider my-4 bg-gradient-primary" />
+          <!-- totTrib -->
+          <h6 class="m-0 font-weight-bold text-primary">
+            Grupo de informações para totais aproximados dos tributos
+            relacionados ao serviço prestado. (somente se necessário)
+          </h6>
+          <div class="row container">
             <div class="col">
-              {% for field in valores_form.visible_fields|slice:"12:15" %}
+              {% for field in valores_form.visible_fields|slice:"11:14" %}
 
               <label for="{{field.id_for_label}}"
                 >{{ field.label }} {% for error in field.errors %}
                 <span class="text-danger">{{ error }}</span>
-                {% endfor %}</label
-              >
-
+                {% endfor %}
+                <span class="text-danger">
+                  {% if field.field.required %} * {% endif %}
+                </span>
+              </label>
               {{ field }} {% endfor %}
             </div>
             <div class="col">
-              {% for field in valores_form.visible_fields|slice:"15:" %}
+              {% for field in valores_form.visible_fields|slice:"14:" %}
 
               <label for="{{field.id_for_label}}"
                 >{{ field.label }} {% for error in field.errors %}
                 <span class="text-danger">{{ error }}</span>
-                {% endfor %}</label
-              >
-
+                {% endfor %}
+                <span class="text-danger">
+                  {% if field.field.required %} * {% endif %}
+                </span>
+              </label>
               {{ field }} {% endfor %}
             </div>
           </div>
@@ -256,5 +247,29 @@
     </form>
   </div>
 </div>
+<script>
+  document
+    .getElementById("id_valores-tribISSQN")
+    .addEventListener("change", function () {
+      const tpImunidadeField = document.getElementById(
+        "id_valores-tpImunidade"
+      );
+      if (this.value === "2") {
+        tpImunidadeField.disabled = false;
+      } else {
+        tpImunidadeField.disabled = true;
+      }
+    });
+  document
+    .getElementById("id_valores-tribISSQN")
+    .addEventListener("change", function () {
+      const pais_resultande = document.getElementById("id_valores-cPaisResult");
+      if (this.value === "3") {
+        pais_resultande.disabled = false;
+      } else {
+        pais_resultande.disabled = true;
+      }
+    });
+</script>
 
 {% endblock %}

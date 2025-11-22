@@ -54,6 +54,7 @@ def login(request):
 
 @login_required(login_url="/", redirect_field_name="login")
 def home(request):
+    
     return render(request, "client/home.html")
 
 

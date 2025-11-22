@@ -10,15 +10,36 @@ from .forms import ClienteForm
 class ClienteAdmin(UserAdmin):
     list_display = ("username", "email", "client_id", "scope")
     add_form = ClienteForm
+
     fieldsets = UserAdmin.fieldsets + (
         (
             "Dados do Cliente",
-            {"classes": ("wide"), "fields": ("client_id", "client_secret", "scope")},
+            {
+                "classes": ("wide"),
+                "fields": (
+                    "cpf",
+                    "cnpj",
+                    "regTrib",
+                    "client_id",
+                    "client_secret",
+                    "scope",
+                ),
+            },
         ),
     )  # type: ignore
     add_fieldsets = UserAdmin.fieldsets + (
         (
             "Dados do Cliente",
-            {"classes": ("wide"), "fields": ("client_id", "client_secret", "scope")},
+            {
+                "classes": ("wide"),
+                "fields": (
+                    "cpf",
+                    "cnpj",
+                    "regTrib",
+                    "client_id",
+                    "client_secret",
+                    "scope",
+                ),
+            },
         ),
     )  # type: ignore

@@ -1,7 +1,7 @@
-from endereco_simples import EndExt
+from value_objects.endereco_simples import EndExt
 from pydantic import BaseModel
 from typing import Optional
-from cep import CEP
+from value_objects.cep import CEP
 
 
 class Endereco(BaseModel):
@@ -10,6 +10,6 @@ class Endereco(BaseModel):
     endExt: Optional[EndExt]
     xCpl: Optional[str]
     xLgr: str
-    tpLgr: Optional[str]
+    
     nro: str
     xBairro: str

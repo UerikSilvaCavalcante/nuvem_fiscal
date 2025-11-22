@@ -16,7 +16,7 @@ class EmpresaSerializer(PayloadSerializer):
             "inscricao_estadual": self._empresa.inscricao_estadual,
             "inscricao_municipal": self._empresa.inscricao_municipal,
             "nome_fantasia": self._empresa.nome_fantasia,
-            "telefone": self._empresa.telefone,
+            "fone": self._empresa.fone,
             "email": self._empresa.email,
             "endereco": self._endereco_serializer,
         }

@@ -101,7 +101,7 @@ class EmpresaForm(forms.Form):
     nome_fantasia = forms.CharField(
         required=True, label="Nome Fantasia", max_length=100
     )
-    telefone = forms.CharField(required=False, label="Telefone", max_length=20)
+    fone = forms.CharField(required=False, label="Telefone", max_length=20)
     email = forms.EmailField(
         required=True,
         label="Email",

@@ -28,7 +28,7 @@ class Empresa(BaseModel):
     inscricao_estadual: str
     inscricao_municipal: str
     nome_fantasia: str
-    telefone: Optional[str]
+    fone: Optional[str]
     email: str
 
 

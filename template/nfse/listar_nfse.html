@@ -1,0 +1,85 @@
+{% extends 'base.html' %} {% load static %} {% block title_page %}Listar
+NFS-e's{% endblock title_page %} {% block content %}
+
+<h1>Consultar NFS-e's</h1>
+<div class="card shadow mb-4">
+  <div class="card-header py-3">
+    <h6 class="m-0 font-weight-bold text-primary">NFS-e's emitidas</h6>
+  </div>
+  <div class="card-body">
+    <div class="table-responsive">
+      <table
+        class="table table-bordered"
+        id="dataTable"
+        width="100%"
+        cellspacing="0"
+      >
+        <thead>
+          <tr>
+            <th>Id</th>
+            <th>Data Emissão</th>
+            <th>Status</th>
+            <th>Link</th>
+            <th>Serie</th>
+            <th>nDPS</th>
+            <th>Info</th>
+            <th>Excluir</th>
+          </tr>
+        </thead>
+        <!-- <tfoot>
+          <tr>
+            <th>CPF ou CNPJ</th>
+            <th>Razão Social</th>
+            <th>Email</th>
+            <th>Excluir</th>
+            <th>Editar</th>
+          </tr>
+        </tfoot> -->
+        {% if nfses|length <= 0 %}
+        <tbody>
+          {% for nfse in nfses %}
+          <tr>
+            <td>{{nfse.id}}</td>
+            <td>{{nfse.data_emissao}}</td>
+            <td
+              class="{% if nfse.status == 'processando' %} bg-warning text=warning {% elif nfse.status == 'autorizada' %} bg-success {% elif nfse.status == 'negada' %} bg-danger text-danger {% elif nfse.status == 'cancelada' %} bg-danger text-danger {% else %} bg-info text-info {% endif %}"
+            >
+              {{nfse.status}}
+            </td>
+            <td>{{nfse.link}}</td>
+            <td>{{nfse.serie}}</td>
+            <td>{{nfse.ndps}}</td>
+            <td>
+              <a
+                href="{% url 'info_nfse' nfse.id %}"
+                class="btn btn-info btn-circle btn-sm"
+              >
+                <i class="fas fa-info-circle"></i>
+              </a>
+            </td>
+            <td>
+              <a
+                href="#"
+                class="btn btn-danger btn-circle btn-sm"
+                data-toggle="modal"
+                data-target="#deleteModal-{{nfse.id}}"
+              >
+                <i class="fas fa-trash"></i>
+              </a>
+              {% include 'nfse/partials/_delete_modal.html' with nfse_id=nfse.id
+              %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+        {% else %}
+        <div class="conteiner">
+          <h1 class="text-center text-primary">Nenhum NFS-e Encontrada</h1>
+        </div>
+        {% endif %}
+      </table>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
