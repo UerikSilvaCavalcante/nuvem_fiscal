@@ -1,0 +1,109 @@
+{% extends 'base.html' %} 
+{% load static %} 
+{% block title_page %} Cancelamento NFSe {% endblock title_page %}
+{% block content %}
+<div class="card shadow mb-4 border-left-danger">
+  <div
+    class="card-header py-3 d-flex flex-row align-items-center justify-content-between"
+  >
+    <h6 class="m-0 font-weight-bold text-danger">
+      <i class="fas fa-ban mr-2"></i>Informações do Cancelamento
+    </h6>
+
+    <div>
+      {% if cancelamento.status == 'concluido' %}
+      <span class="badge badge-success px-3 py-2">CANCELADO / CONCLUÍDO</span>
+      {% elif cancelamento.status == 'pendente' %}
+      <span class="badge badge-warning px-3 py-2">PENDENTE</span>
+      {% elif cancelamento.status == 'erro' %}
+      <span class="badge badge-danger px-3 py-2">ERRO NO CANCELAMENTO</span>
+      {% else %}
+      <span class="badge badge-secondary px-3 py-2"
+        >{{ cancelamento.status|upper }}</span
+      >
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="card-body">
+    {% if cancelamento.mensagens %}
+    <div class="alert alert-secondary border-left-warning" role="alert">
+      <h6 class="alert-heading font-weight-bold text-gray-800">
+        <i class="fas fa-exclamation-triangle mr-1"></i> Retorno do
+        Processamento:
+      </h6>
+      <hr />
+      <ul class="mb-0 pl-3">
+        {% for msg in cancelamento.mensagens %}
+        <li class="mb-2">
+          <span class="font-weight-bold text-dark"
+            >Código {{ msg.codigo }}:</span
+          >
+          {{ msg.descricao }} {% if msg.correcao %}
+          <br />
+          <small class="text-muted"
+            ><em>Sugestão: {{ msg.correcao }}</em></small
+          >
+          {% endif %}
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+    <div style="height: 15px"></div>
+    {% endif %}
+
+    <div class="d-grid row row-gap-3">
+      <div class="col card border-bottom-danger p-0">
+        <p class="card-header m-0 font-weight-bold text-danger">
+          ID do Protocolo
+        </p>
+        <p class="card-body text-gray-800">{{ cancelamento.id }}</p>
+      </div>
+      <div class="w-4" style="width: 30px"></div>
+      <div class="col card border-bottom-danger p-0">
+        <p class="card-header m-0 font-weight-bold text-danger">
+          Data/Hora da Solicitação
+        </p>
+        <p class="card-body text-gray-800">
+          {{ cancelamento.data_hora }}
+        </p>
+      </div>
+    </div>
+
+    <div style="height: 15px"></div>
+
+    <div class="d-grid row row-gap-3">
+      <div class="col card border-bottom-danger p-0">
+        <p class="card-header m-0 font-weight-bold text-danger">
+          Código de Cancelamento
+        </p>
+        <p class="card-body text-gray-800">
+          {{ cancelamento.codigo|default:"-" }}
+        </p>
+      </div>
+      <div class="w-4" style="width: 30px"></div>
+      <div class="col card border-bottom-danger p-0">
+        <p class="card-header m-0 font-weight-bold text-danger">Status Atual</p>
+        <p class="card-body text-gray-800 font-weight-bold">
+          {{ cancelamento.status|upper }}
+        </p>
+      </div>
+    </div>
+
+    <div style="height: 15px"></div>
+
+    <div class="d-grid row row-gap-3">
+      <div class="col card border-bottom-danger p-0">
+        <p class="card-header m-0 font-weight-bold text-danger">
+          Motivo do Cancelamento
+        </p>
+        <div class="card-body bg-gray-100">
+          <p class="m-0 text-gray-900" style="font-style: italic">
+            "{{ cancelamento.motivo }}"
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}

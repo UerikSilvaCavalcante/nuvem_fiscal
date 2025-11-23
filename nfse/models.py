@@ -49,14 +49,7 @@ class Contato(BaseModel):
 class Toma(BaseModel):
     identificacao: Identificacao
     contato: Optional[Contato]
-    dadosFiscais: Optional[DadosFiscais]
-    end: Optional[Endereco]
-
-
-class Interm(BaseModel):
-    identificacao: Identificacao
-    contato: Optional[Contato]
-    dadosFiscais: Optional[DadosFiscais]
+    dadosFiscais: Optional[DadosFiscais] = None
     end: Optional[Endereco]
 
 
@@ -67,10 +60,10 @@ class LocPreset(BaseModel):
 
 class CServ(BaseModel):
     cTribNac: str
-    cTribMun: Optional[str]
-    CNAE: Optional[str]
+    cTribMun: Optional[str] = ""
+    CNAE: Optional[str] = ""
     xDescServ: str
-    cNBS: Optional[str]
+    cNBS: Optional[str] = ""
 
 
 class ServInfo(BaseModel, ABC):
@@ -84,13 +77,13 @@ class ServInfo(BaseModel, ABC):
 
 
 class Serv(BaseModel):
-    cLocPrestacao: Optional[str]
-    cPaisPrestacao: Optional[str]
+    cLocPrestacao: Optional[str] = None
+    cPaisPrestacao: Optional[str] = "1058"
     cServ: CServ
 
 
 class VServPreset(BaseModel):
-    vReceb: Optional[Decimal]
+    vReceb: Optional[Decimal] = Decimal(0)
     vServ: Decimal
 
 
@@ -101,46 +94,48 @@ class VDescCondIcond(BaseModel):
 
 class TribMun(BaseModel):
     tribISSQN: tribmun_enums.TRIBISSQN
-    cLocIncid: Optional[str]
-    cPaisResult: Optional[str]
+    cLocIncid: Optional[str] = ""
+    cPaisResult: Optional[str] = "1058"
 
     tpImunidade: Optional[tribmun_enums.TPIMUNIDADE]
 
-    pAliq: Optional[Decimal]
+    pAliq: Optional[Decimal] = Decimal(0.00)
 
-    tpRetISSQN: Optional[tribmun_enums.TPRETISSQN]
+    tpRetISSQN: Optional[tribmun_enums.TPRETISSQN] = tribmun_enums.TPRETISSQN.N_RETIDNO
 
 
 class Piscofins(BaseModel):
-    CST: Optional[piscofins_enum.CST]
-    vPis: Optional[Decimal]
-    vCofins: Optional[Decimal]
-    tpRetPisCofins: Optional[piscofins_enum.TPRETPISCOFINS]
+    CST: piscofins_enum.CST
+    vPis: Optional[Decimal] = Decimal(0)
+    vCofins: Optional[Decimal] = Decimal(0)
+    tpRetPisCofins: Optional[piscofins_enum.TPRETPISCOFINS] = (
+        piscofins_enum.TPRETPISCOFINS.NAO_RETIDO
+    )
 
 
 class TribFed(BaseModel):
-    piscofins: Optional[Piscofins]
+    piscofins: Optional[Piscofins] = None
 
-    vRetCSLL: Optional[Decimal]
+    vRetCSLL: Optional[Decimal] = None
 
 
 class VTotTrib(BaseModel):
-    vTotTribFed: Optional[Decimal]
-    vTotTribMun: Optional[Decimal]
-    vTotTribEst: Optional[Decimal]
+    vTotTribFed: Decimal
+    vTotTribMun: Decimal
+    vTotTribEst: Decimal
 
 
 class PTotTrib(BaseModel):
-    pTotTribFed: Optional[Decimal]
-    pTotTribMun: Optional[Decimal]
-    pTotTribEst: Optional[Decimal]
+    pTotTribFed: Decimal
+    pTotTribMun: Decimal
+    pTotTribEst: Decimal
 
 
 class TotTrib(BaseModel):
-    vTotTrib: Optional[VTotTrib]
-    pTotTrib: Optional[PTotTrib]
-    indTotTrib: Optional[int]
-    pTotTribSN: Optional[Decimal]
+    vTotTrib: Optional[VTotTrib] = None
+    pTotTrib: Optional[PTotTrib] = None
+    indTotTrib: Optional[int] = 0
+    pTotTribSN: Optional[Decimal] = Decimal(0)
 
 
 class Trib(BaseModel):
@@ -151,7 +146,7 @@ class Trib(BaseModel):
 
 class Valores(BaseModel):
     vServPreset: VServPreset
-    vDescCondIncond: Optional[VDescCondIcond]
+    vDescCondIncond: Optional[VDescCondIcond] = None
 
     trib: Trib
 
@@ -160,7 +155,7 @@ class InfDPS(BaseModel):
     tpAmb: Optional[AMBIENTE]
     dhEmi: Date
     verAplic: Optional[str] = ""
-    dCompet: Optional[Date]
+    dCompet: Date
 
     toma: Toma
 
@@ -171,6 +166,9 @@ class InfDPS(BaseModel):
 class NFSe(BaseModel):
     provedor: PROVEDOR = PROVEDOR.PRADAO
     ambiente: AMBIENTE
-    referencia: Optional[str]
+    referencia: Optional[str] = ""
 
-    
+
+class Cancelamento(BaseModel):
+    codigo: Optional[str] = ""
+    motivo: Optional[str] = ""

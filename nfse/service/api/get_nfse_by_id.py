@@ -12,16 +12,16 @@ client = MongoClient(os.getenv("MONGO_URI"))
 db = client["nfse_false_db"]
 
 
-def get_nfses(token: str, cpf_cnpj: str, ambiente: str):
+def get_nfse_by_id(token: str, id: str):
     base_url = str(os.getenv("BASE_URL"))
-    endpoint = f"nfse/?cpf_cnpj={cpf_cnpj}&ambiente={ambiente}"
+    endpoint = f"nfse/{id}"
     headers = {
         "Authorization": f"Bearer {token}",
     }
     try:
         # response = requests.get(f"{base_url}{endpoint}", headers=headers)
-        data = db.nfse.find().to_list(length=None)
-        response = {"count": len(list(data)), "data": data}
+        data = db.nfse.find_one({"id": id})
+        response = {"data": data}
         return response
     except Exception as e:
         raise Exception(f"Erro ao obter as NFSes: {str(e)}")

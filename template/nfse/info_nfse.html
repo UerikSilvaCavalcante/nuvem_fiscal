@@ -1,0 +1,282 @@
+{% extends 'base.html' %} 
+{% load static %} 
+{% block title_page %} NFS-e info {% endblock title_page %}
+{% block content %}
+
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+
+    <h1 class="h3 mb-0 text-gray-800">Detalhes da NFS-e</h1>
+    
+    {% if nfse.link_url %}
+    <a href="{{ nfse.link_url }}" target="_blank" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+        <i class="fas fa-download fa-sm text-white-50"></i> Baixar PDF
+    </a>
+    {% endif %}
+</div>
+{% include 'nfse/partials/_delete_modal.html' with nfse_id=nfse.id %}
+<div class="card shadow mb-4">
+  <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+    <h6 class="m-0 font-weight-bold text-primary">
+      Nota Fiscal: {{ nfse.numero|default:"N/A" }} 
+      {% if nfse.status == 'autorizado' %}
+        <span class="badge badge-success">{{ nfse.status|upper }}</span>
+      {% elif nfse.status == 'erro' or nfse.status == 'cancelado' %}
+        <span class="badge badge-danger">{{ nfse.status|upper }}</span>
+      {% else %}
+        <span class="badge badge-warning">{{ nfse.status|upper }}</span>
+      {% endif %}
+    </h6>
+    
+    {% if nfse.status == 'autorizado' or nfse.status == "cancelado" %}
+    <div class="dropdown no-arrow">
+      <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+      </a>
+      <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
+        <div class="dropdown-header">Ações:</div>
+        {% if nfse.link_url %}
+        <a class="dropdown-item" href="{{ nfse.link_url }}" target="_blank">
+            <i class="fas fa-file-pdf"></i> Visualizar PDF
+        </a>
+        {% endif %}
+        {% if nfse.status == 'autorizado' %}
+           <a class="dropdown-item text-danger" href="#" 
+            data-toggle="modal"
+            data-target="#deleteModal-{{nfse.id}}">
+            <i class="fas fa-ban"></i> Cancelar Nota
+          </a>
+        {% elif nfse.status == 'cancelado' %}
+           <a class="dropdown-item text-danger" href="{% url 'cancelamento_sit' nfse.id %}">
+            <i class="fas fa-ban"></i> Acompanhar Cancelamento
+           </a> 
+            
+        {% endif %}
+
+      </div>
+    </div>
+    {% endif %}
+  </div>
+
+  <div class="card-body">
+    
+    {% if nfse.mensagens %}
+    <div class="alert {% if nfse.status == 'erro' %}alert-danger{% else %}alert-warning{% endif %}" role="alert">
+        <h6 class="alert-heading font-weight-bold">Erros/Avisos:</h6>
+        <ul class="mb-0">
+            {% for msg in nfse.mensagens %}
+            <li><strong>{{ msg.codigo }}:</strong> {{ msg.descricao }} ({{ msg.correcao }})</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    <div class="d-grid row row-gap-3">
+      <div class="col card border-bottom-primary p-0">
+        <p class="card-header m-0 font-weight-bold text-primary">Número da Nota</p>
+        <p class="card-body">{{ nfse.numero|default:"-" }}</p>
+      </div>
+      <div class="w-4" style="width: 30px"></div>
+      <div class="col card border-bottom-primary p-0">
+        <p class="card-header m-0 font-weight-bold text-primary">Código de Verificação</p>
+        <p class="card-body">{{ nfse.codigo_verificacao|default:"-" }}</p>
+      </div>
+    </div>
+    <div style="height: 15px"></div>
+
+    <div class="d-grid row row-gap-3">
+      <div class="col card border-bottom-primary p-0">
+        <p class="card-header m-0 font-weight-bold text-primary">Data de Emissão</p>
+        <p class="card-body">{{ nfse.data_emissao }}</p>
+      </div>
+      <div class="w-4" style="width: 30px"></div>
+      <div class="col card border-bottom-primary p-0">
+        <p class="card-header m-0 font-weight-bold text-primary">Ambiente</p>
+        <p class="card-body">{{ nfse.ambiente|title }}</p>
+      </div>
+    </div>
+    <div style="height: 15px"></div>
+
+    <div class="d-grid row row-gap-3">
+        <div class="col card border-bottom-primary p-0">
+          <p class="card-header m-0 font-weight-bold text-primary">RPS (Número / Série)</p>
+          <p class="card-body">
+              {{ nfse.declaracao_prestacao_servico.rps.identificacao_rps.numero }} / 
+              {{ nfse.declaracao_prestacao_servico.rps.identificacao_rps.serie }}
+          </p>
+        </div>
+        <div class="w-4" style="width: 30px"></div>
+        <div class="col card border-bottom-primary p-0">
+          <p class="card-header m-0 font-weight-bold text-primary">Referência Interna</p>
+          <p class="card-body">{{ nfse.referencia }}</p>
+        </div>
+    </div>
+    <div style="height: 15px"></div>
+
+    <div class="d-grid row row-gap-3">
+      <a href="#collapsePrestador" class="d-block card-header py-3" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="collapsePrestador" style="width: 100%">
+        <h6 class="m-0 font-weight-bold text-primary">Prestador de Serviço</h6>
+      </a>
+      <div class="collapse p-0 container" id="collapsePrestador">
+        <div class="card-body">
+            {% with prestador=nfse.declaracao_prestacao_servico.prestador %}
+            <div class="d-grid row container" style="gap: 20px">
+                <div class="col card border-bottom-primary p-0">
+                    <p class="card-header m-0 font-weight-bold text-primary">Razão Social</p>
+                    <p class="card-body">{{ prestador.nome_razao_social }}</p>
+                </div>
+                <div class="col card border-bottom-primary p-0">
+                    <p class="card-header m-0 font-weight-bold text-primary">CNPJ/CPF</p>
+                    <p class="card-body">{{ prestador.cpf_cnpj }}</p>
+                </div>
+            </div>
+            <div style="height: 10px"></div>
+            <div class="d-grid row container" style="gap: 20px">
+                <div class="col card border-bottom-primary p-0">
+                    <p class="card-header m-0 font-weight-bold text-primary">Inscrição Municipal</p>
+                    <p class="card-body">{{ prestador.inscricao_municipal }}</p>
+                </div>
+                <div class="col card border-bottom-primary p-0">
+                    <p class="card-header m-0 font-weight-bold text-primary">Email</p>
+                    <p class="card-body">{{ prestador.email }}</p>
+                </div>
+            </div>
+            {% endwith %}
+        </div>
+      </div>
+    </div>
+    <div style="height: 15px"></div>
+
+    <div class="d-grid row row-gap-3">
+      <a href="#collapseTomador" class="d-block card-header py-3" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="collapseTomador" style="width: 100%">
+        <h6 class="m-0 font-weight-bold text-primary">Tomador de Serviço (Cliente)</h6>
+      </a>
+      <div class="collapse show p-0 container" id="collapseTomador">
+        <div class="card-body">
+            {% with tomador=nfse.declaracao_prestacao_servico.tomador %}
+            <div class="d-grid row container" style="gap: 20px">
+                <div class="col card border-bottom-primary p-0">
+                    <p class="card-header m-0 font-weight-bold text-primary">Razão Social</p>
+                    <p class="card-body">{{ tomador.nome_razao_social }}</p>
+                </div>
+                <div class="col card border-bottom-primary p-0">
+                    <p class="card-header m-0 font-weight-bold text-primary">CNPJ/CPF</p>
+                    <p class="card-body">{{ tomador.cpf_cnpj }}</p>
+                </div>
+            </div>
+            <div style="height: 10px"></div>
+            
+            <div class="d-grid row container" style="gap: 20px">
+                <div class="col card border-bottom-primary p-0">
+                    <p class="card-header m-0 font-weight-bold text-primary">Endereço</p>
+                    <p class="card-body">
+                        {{ tomador.endereco.logradouro }}, {{ tomador.endereco.numero }} 
+                        {% if tomador.endereco.complemento %} - {{ tomador.endereco.complemento }}{% endif %}
+                    </p>
+                </div>
+            </div>
+            <div style="height: 10px"></div>
+
+            <div class="d-grid row container" style="gap: 20px">
+                <div class="col card border-bottom-primary p-0">
+                    <p class="card-header m-0 font-weight-bold text-primary">Bairro</p>
+                    <p class="card-body">{{ tomador.endereco.bairro }}</p>
+                </div>
+                <div class="col card border-bottom-primary p-0">
+                    <p class="card-header m-0 font-weight-bold text-primary">Cidade / UF</p>
+                    <p class="card-body">{{ tomador.endereco.cidade }} / {{ tomador.endereco.uf }}</p>
+                </div>
+                <div class="col card border-bottom-primary p-0">
+                    <p class="card-header m-0 font-weight-bold text-primary">CEP</p>
+                    <p class="card-body">{{ tomador.endereco.cep }}</p>
+                </div>
+            </div>
+            {% endwith %}
+        </div>
+      </div>
+    </div>
+    <div style="height: 15px"></div>
+
+    <div class="d-grid row row-gap-3">
+        <a href="#collapseServicos" class="d-block card-header py-3" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="collapseServicos" style="width: 100%">
+          <h6 class="m-0 font-weight-bold text-primary">Serviços e Valores</h6>
+        </a>
+        <div class="collapse show p-0 container" id="collapseServicos">
+            {% for servico in nfse.declaracao_prestacao_servico.servicos %}
+            <div class="card-body">
+                <div class="d-grid row container" style="gap: 20px">
+                    <div class="col card border-bottom-primary p-0">
+                        <p class="card-header m-0 font-weight-bold text-primary">Discriminação do Serviço</p>
+                        <p class="card-body" style="white-space: pre-wrap;">{{ servico.discriminacao }}</p>
+                    </div>
+                </div>
+                <div style="height: 10px"></div>
+
+                <div class="d-grid row container" style="gap: 20px">
+                    <div class="col card border-bottom-primary p-0">
+                        <p class="card-header m-0 font-weight-bold text-primary">CNAE</p>
+                        <p class="card-body">{{ servico.codigo_cnae }}</p>
+                    </div>
+                    <div class="col card border-bottom-primary p-0">
+                        <p class="card-header m-0 font-weight-bold text-primary">Item Lista Serviço</p>
+                        <p class="card-body">{{ servico.item_lista_servico }}</p>
+                    </div>
+                    <div class="col card border-bottom-primary p-0">
+                        <p class="card-header m-0 font-weight-bold text-primary">Tributação Mun.</p>
+                        <p class="card-body">{{ servico.codigo_tributacao_municipio }}</p>
+                    </div>
+                </div>
+                <div style="height: 15px"></div>
+
+                <h6 class="m-0 font-weight-bold text-secondary pl-3">Detalhamento Financeiro</h6>
+                <div style="height: 10px"></div>
+
+                <div class="d-grid row container" style="gap: 20px">
+                    <div class="col card border-bottom-success p-0">
+                        <p class="card-header m-0 font-weight-bold text-success">Valor Líquido</p>
+                        <p class="card-body font-weight-bold">R$ {{ servico.valores.valor_liquido }}</p>
+                    </div>
+                    <div class="col card border-bottom-primary p-0">
+                        <p class="card-header m-0 font-weight-bold text-primary">Valor Serviços</p>
+                        <p class="card-body">R$ {{ servico.valores.valor_servicos }}</p>
+                    </div>
+                </div>
+                <div style="height: 10px"></div>
+
+                <div class="d-grid row container" style="gap: 20px">
+                    <div class="col card border-bottom-primary p-0">
+                        <p class="card-header m-0 font-weight-bold text-primary">ISS ({{ servico.valores.aliquota_iss }}%)</p>
+                        <div class="card-body">
+                            <p class="mb-1">Valor: R$ {{ servico.valores.valor_iss }}</p>
+                            <p class="mb-0 text-xs">Retido: {% if servico.valores.valor_iss_retido > 0 %}Sim (R$ {{ servico.valores.valor_iss_retido }}){% else %}Não{% endif %}</p>
+                        </div>
+                    </div>
+                    <div class="col card border-bottom-primary p-0">
+                        <p class="card-header m-0 font-weight-bold text-primary">Retenções Federais</p>
+                        <div class="card-body">
+                            <p class="mb-0 text-xs">PIS: R$ {{ servico.valores.valor_pis }}</p>
+                            <p class="mb-0 text-xs">COFINS: R$ {{ servico.valores.valor_cofins }}</p>
+                            <p class="mb-0 text-xs">INSS: R$ {{ servico.valores.valor_inss }}</p>
+                            <p class="mb-0 text-xs">IR: R$ {{ servico.valores.valor_ir }}</p>
+                            <p class="mb-0 text-xs">CSLL: R$ {{ servico.valores.valor_csll }}</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    
+    {% if nfse.declaracao_prestacao_servico.outras_informacoes %}
+    <div style="height: 15px"></div>
+    <div class="d-grid row row-gap-3">
+        <div class="col card border-bottom-primary p-0">
+            <p class="card-header m-0 font-weight-bold text-primary">Outras Informações</p>
+            <p class="card-body">{{ nfse.declaracao_prestacao_servico.outras_informacoes }}</p>
+        </div>
+    </div>
+    {% endif %}
+
+  </div>
+</div>
+{% endblock %}

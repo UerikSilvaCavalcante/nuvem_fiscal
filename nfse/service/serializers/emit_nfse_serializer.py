@@ -7,7 +7,6 @@ from nfse.models import (
     Preset,
     RegTrib,
     Toma,
-    Interm,
     Serv,
     Valores,
 )

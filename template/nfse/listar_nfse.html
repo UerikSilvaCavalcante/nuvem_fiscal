@@ -16,14 +16,14 @@ NFS-e's{% endblock title_page %} {% block content %}
       >
         <thead>
           <tr>
-            <th>Id</th>
+            <th>Numero</th>
             <th>Data Emissão</th>
             <th>Status</th>
-            <th>Link</th>
             <th>Serie</th>
             <th>nDPS</th>
             <th>Info</th>
-            <th>Excluir</th>
+            
+            <th>Link</th>
           </tr>
         </thead>
         <!-- <tfoot>
@@ -35,20 +35,20 @@ NFS-e's{% endblock title_page %} {% block content %}
             <th>Editar</th>
           </tr>
         </tfoot> -->
-        {% if nfses|length <= 0 %}
+        {% if nfses|length > 0 %}
         <tbody>
           {% for nfse in nfses %}
           <tr>
-            <td>{{nfse.id}}</td>
-            <td>{{nfse.data_emissao}}</td>
+            <td>{% if nfse.numero %}{{nfse.numero}}{% endif %}</td>
+            <td>{% if nfse.data_emissao %}{{nfse.data_emissao}}{% endif %}</td>
             <td
-              class="{% if nfse.status == 'processando' %} bg-warning text=warning {% elif nfse.status == 'autorizada' %} bg-success {% elif nfse.status == 'negada' %} bg-danger text-danger {% elif nfse.status == 'cancelada' %} bg-danger text-danger {% else %} bg-info text-info {% endif %}"
+              class="{% if nfse.status == 'processando' %} text-warning text-capitalize text-center {% elif nfse.status == 'autorizado' %} text-success text-capitalize text-center {% elif nfse.status == 'negada' %} text-danger text-capitalize text-center {% elif nfse.status == 'cancelado' or nfse.status == 'erro' %} text-danger text-capitalize text-center {% else %} text-info text-capitalize text-center text-info text-capitalize text-center {% endif %}"
             >
               {{nfse.status}}
             </td>
-            <td>{{nfse.link}}</td>
-            <td>{{nfse.serie}}</td>
-            <td>{{nfse.ndps}}</td>
+
+            <td>{{nfse.DPS.serie}}</td>
+            <td>{{nfse.DPS.nDPS}}</td>
             <td>
               <a
                 href="{% url 'info_nfse' nfse.id %}"
@@ -57,25 +57,23 @@ NFS-e's{% endblock title_page %} {% block content %}
                 <i class="fas fa-info-circle"></i>
               </a>
             </td>
+            
             <td>
-              <a
-                href="#"
-                class="btn btn-danger btn-circle btn-sm"
-                data-toggle="modal"
-                data-target="#deleteModal-{{nfse.id}}"
-              >
-                <i class="fas fa-trash"></i>
+              <a href="{{nfse.link_url}}">
+                <i class="fas fa-external-link-alt"></i>
               </a>
-              {% include 'nfse/partials/_delete_modal.html' with nfse_id=nfse.id
-              %}
             </td>
           </tr>
           {% endfor %}
         </tbody>
         {% else %}
-        <div class="conteiner">
-          <h1 class="text-center text-primary">Nenhum NFS-e Encontrada</h1>
-        </div>
+        <tr>
+          <td colspan="8">
+            <div class="conteiner">
+              <h1 class="text-center text-primary">Nenhuma NFS-e Encontrada</h1>
+            </div>
+          </td>
+        </tr>
         {% endif %}
       </table>
     </div>

@@ -1,10 +1,13 @@
 from django.shortcuts import render, redirect
+from django.contrib import messages
+
 from nfse.forms import (
     EmitNFSeForm,
     InfDPSForm,
     TomaForm,
     ServForm,
     ValoresForm,
+    CancelamentoForm,
 )
 from nfse.use_case.aply_retencoes_fed import AplyRetencoesFederais
 from nfse.models import (
@@ -22,6 +25,7 @@ from nfse.models import (
     TribFed,
     TribMun,
     Piscofins,
+    Cancelamento,
 )
 from nfse.service.helper.trata_decimal import DecimalEncoder
 from value_objects.endereco import Endereco, EndExt
@@ -31,6 +35,10 @@ import json
 from nfse.service.api.get_cidades_atendidas import get_cidades_atendidas
 from nfse.service.api.get_nfses import get_nfses
 from empresa.service.api.get_config_nfse import get_config_nfse
+from nfse.service.api.get_nfse_by_id import get_nfse_by_id
+from nfse.service.api.get_cancelamento_situacao import get_cancelamento_situacao
+from nfse.service.serializers.cancelar_serialize import CancelarNFSeSerializer
+from nfse.service.api.post_cancelamento_nfse import post_cancelar_nfse
 
 
 # Create your views here.
@@ -41,7 +49,6 @@ def emit_nfse(request):
     serv_form = ServForm(prefix="serv")
     valores_form = ValoresForm(prefix="valores")
     cidades_atendidas = get_cidades_atendidas(request.user.token)
-
     if request.method == "POST":
         nfse_form = EmitNFSeForm(request.POST, prefix="nfse")
         infDPS_form = InfDPSForm(request.POST, prefix="infDPS")
@@ -174,13 +181,76 @@ def emit_nfse(request):
             "toma_form": toma_form,
             "serv_form": serv_form,
             "valores_form": valores_form,
-            "cidades": cidades_atendidas["data"],
+            "cidades": cidades_atendidas.get("data"),
         },
     )
 
 
 def listar_nfse(request):
-    config_nfse = get_config_nfse(request.user.token, "10247520000157")
-    nfses = get_nfses(request.user.token, "10247520000157", "homologacao")
+    try:
+        config_nfse = get_config_nfse(request.user.token, "10247520000157")
+        nfses = get_nfses(request.user.token, "10247520000157", "homologacao")
+        cancelamento_form = CancelamentoForm()
+        return render(
+            request,
+            "nfse/listar_nfse.html",
+            {"nfses": nfses.get("data"), "cancelamento_form": cancelamento_form},
+        )
+    except Exception as e:
+        print(e)
+        messages.error(request, "Erro ao buscar NFSes.")
+        return redirect("home")
 
-    return render(request, "nfse/listar_nfse.html", {"nfses": nfses.get("data")})
+
+def info_nfse(request, nfse_id):
+    try:
+        nfse = get_nfse_by_id(request.user.token, nfse_id)
+        # print(nfse)
+        return render(request, "nfse/info_nfse.html", {"nfse": nfse.get("data")})
+    except Exception as e:
+        print(e)
+        messages.error(request, "Erro ao buscar informações sobre a NFS-e.")
+        return redirect("listar_nfse")
+
+
+def cancelamento_situacao(request, nfse_id):
+    try:
+        cancelamento = get_cancelamento_situacao(request.user.token, nfse_id)
+        print(cancelamento)
+        return render(
+            request,
+            "nfse/cancelamento_situacao.html",
+            {"cancelamento": cancelamento.get("data")},
+        )
+
+    except Exception as e:
+        print(e)
+        messages.error(request, "Erro ao buscar informações sobre a NFS-e.")
+        return redirect("listar_nfse")
+
+
+def cancelar_nfse(request, nfse_id):
+    try:
+        if request.method == "POST":
+            form = CancelamentoForm(request.POST)
+            if form.is_valid():
+                cancelamento = Cancelamento(**form.cleaned_data)
+                cancelamento_serializer = CancelarNFSeSerializer(
+                    cancelamento
+                ).serialize()
+                response = post_cancelar_nfse(
+                    request.user.token, nfse_id, cancelamento_serializer
+                )
+                # if response.status_code == 200:
+                #     messages.success(request, "NFS-e cancelada com sucesso.")
+                # else:
+                #     messages.error(request, "Erro ao cancelar NFS-e.")
+                messages.success(request, "Cancelamento solicitado com sucesso.")
+                print(response)
+                return redirect("listar_nfse")
+
+        return redirect("cancelamento_situacao", nfse_id=nfse_id)
+    except Exception as e:
+        print(e)
+        messages.error(request, "Erro ao buscar infos sobre a NFS-e.")
+        return redirect("listar_nfse")

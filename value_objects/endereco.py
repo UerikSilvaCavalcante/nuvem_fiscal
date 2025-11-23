@@ -7,9 +7,9 @@ from value_objects.cep import CEP
 class Endereco(BaseModel):
     cMun: Optional[str]
     cep: CEP
-    endExt: Optional[EndExt]
+    endExt: Optional[EndExt] = None
     xCpl: Optional[str]
     xLgr: str
-    
+
     nro: str
     xBairro: str

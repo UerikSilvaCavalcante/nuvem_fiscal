@@ -10,25 +10,25 @@ from empresa.enums.config_nfse_enums import *
 class Endereco(BaseModel):
     logradouro: str
     numero: str
-    complemento: Optional[str]
+    complemento: Optional[str] = ""
     bairro: str
-    cidade: str
+    cidade: Optional[str] = ""
 
     cep: CEP
-    pais: str
+    pais: Optional[str] = "Brasil"
     uf: str
-    codigo_pais: str
+    codigo_pais: Optional[str] = "1058"
 
 
 class Empresa(BaseModel):
     cpf_cnpj: str
     nome_razao_social: str
-    created_at: Optional[date]
-    updated_at: Optional[date]
-    inscricao_estadual: str
-    inscricao_municipal: str
-    nome_fantasia: str
-    fone: Optional[str]
+    created_at: Optional[date] = date.today()
+    updated_at: Optional[date] = date.today()
+    inscricao_estadual: Optional[str] = ""
+    inscricao_municipal: Optional[str] = ""
+    nome_fantasia: Optional[str] = ""
+    fone: Optional[str] = ""
     email: str
 
 

@@ -520,3 +520,24 @@ class EmitNFSeForm(forms.Form):
         super().__init__(*args, **kwargs)
         for field in self.fields.values():
             field.widget.attrs.update({"class": "form-control form-control-user"})
+
+
+class CancelamentoForm(forms.Form):
+    codigo = forms.CharField(
+        required=False,
+        label="Codigo",
+        widget=forms.TextInput(attrs={"class": "form-control form-control-user"}),
+    )
+    motivo = forms.CharField(
+        required=False,
+        label="Motivo",
+        widget=forms.Textarea(attrs={"class": "form-control form-control-user"}),
+    )
+
+    def __init__(self, *args, **kwargs):
+        """
+        Aplica a estilização do formulario
+        """
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs.update({"class": "form-control form-control-user"})

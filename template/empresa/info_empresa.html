@@ -1,9 +1,13 @@
-{% extends 'base.html' %} {% load static %} {% block content %}
+{% extends 'base.html' %} {% load static %} 
+{% block title_page %} Empresa info {% endblock title_page %}
+
+{% block content %}
 <h1>Informações da Empresa</h1>
 <div class="card shadow mb-4">
   <div
     class="card-header py-3 d-flex flex-row align-items-center justify-content-between"
   >
+    {% include 'empresa/partials/_delete_modal.html' with empresa_id=empresa.cpf_cnpj %}
     <h6 class="m-0 font-weight-bold text-primary">
       Empresa {{empresa.nome_razao_social}}
     </h6>
@@ -37,7 +41,6 @@
         >
           <i class="fas fa-trash"></i> Excluir empresa
         </a>
-        {% include 'empresa/partials/_delete_modal.html' with empresa_id=empresa.cpf_cnpj %}
       </div>
     </div>
   </div>
